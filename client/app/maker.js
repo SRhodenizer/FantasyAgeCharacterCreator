@@ -131,15 +131,15 @@ const CharList = function(props){
                 <h3 className="level">Level: {char.level}</h3>
                 <h3 className="speed">Movement Speed: {char.speed}</h3>
                 <h3 className="stats"> Stats: </h3>
-                <p className="stats">Accuracy: {char.accuracy}</p>
-                <p className="stats">Communication: {char.communication}</p>
-                <p className="stats">Constitution: {char.constitution}</p>
-                <p className="stats">Dexterity: {char.dexterity}</p>
-                <p className="stats">Fighting: {char.fighting}</p>
-                <p className="stats">Intelligence: {char.intelligence}</p>
-                <p className="stats">Perception: {char.perception}</p>
-                <p className="stats">Strength: {char.strength}</p>
-                <p className="stats">Willpower: {char.willpower}</p>
+                <p className="stats">Accuracy: {char.accuracy.mod}</p>
+                <p className="stats">Communication: {char.communication.mod}</p>
+                <p className="stats">Constitution: {char.constitution.mod}</p>
+                <p className="stats">Dexterity: {char.dexterity.mod}</p>
+                <p className="stats">Fighting: {char.fighting.mod}</p>
+                <p className="stats">Intelligence: {char.intelligence.mod}</p>
+                <p className="stats">Perception: {char.perception.mod}</p>
+                <p className="stats">Strength: {char.strength.mod}</p>
+                <p className="stats">Willpower: {char.willpower.mod}</p>
                 <h4>Current Money(SP): {char.money}</h4>
                 <h4>Inventory</h4>
                 <ul>{inv}</ul>

@@ -37,48 +37,39 @@ const CharSchema = new mongoose.Schema({
     required: true,
   },
   accuracy: {
-    type: Number,
-    min: -2,
+    type: JSON,
     required: true,
   },
   communication: {
-    type: Number,
-    min: -2,
+    type: JSON,
     required: true,
   },
   constitution: {
-    type: Number,
-    min: -2,
+    type: JSON,
     required: true,
   },
   dexterity: {
-    type: Number,
-    min: -2,
+    type: JSON,
     required: true,
   },
   fighting: {
-    type: Number,
-    min: -2,
+    type: JSON,
     required: true,
   },
   intelligence: {
-    type: Number,
-    min: -2,
+    type: JSON,
     required: true,
   },
   perception: {
-    type: Number,
-    min: -2,
+    type: JSON,
     required: true,
   },
   strength: {
-    type: Number,
-    min: -2,
+    type: JSON,
     required: true,
   },
   willpower: {
-    type: Number,
-    min: -2,
+    type: JSON,
     required: true,
   },
   speed: {

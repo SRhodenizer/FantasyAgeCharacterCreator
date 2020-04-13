@@ -31,7 +31,8 @@ const makeChar = (req, res) => {
   const stats = [];
 
   for (let i = 0; i < 9; i++) {
-    stats[i] = (Math.floor(Math.random() * 6)) + (Math.floor(Math.random() * 6))
+    stats[i] = {};
+    stats[i].value = (Math.floor(Math.random() * 6)) + (Math.floor(Math.random() * 6))
             + (Math.floor(Math.random() * 6)) + 3;
   }
   // stats are as follows
@@ -50,36 +51,36 @@ const makeChar = (req, res) => {
 
   // converts stat values into their roll modifiers
   for (let i = 0; i < 9; i++) {
-    switch (stats[i]) {
+    switch (stats[i].value) {
       case 3:
-        stats[i] = -2;
+        stats[i].mod = -2;
         break;
       case 4:
       case 5:
-        stats[i] = -1;
+        stats[i].mod = -1;
         break;
       case 6:
       case 7:
       case 8:
-        stats[i] = 0;
+        stats[i].mod = 0;
         break;
       case 9:
       case 10:
       case 11:
-        stats[i] = 1;
+        stats[i].mod = 1;
         break;
       case 12:
       case 13:
       case 14:
-        stats[i] = 2;
+        stats[i].mod = 2;
         break;
       case 15:
       case 16:
       case 17:
-        stats[i] = 3;
+        stats[i].mod = 3;
         break;
       case 18:
-        stats[i] = 4;
+        stats[i].mod = 4;
         break;
       default:
         break;
@@ -92,28 +93,28 @@ const makeChar = (req, res) => {
   // changes stats based on racial features
   switch (req.body.race) {
     case 'Dwarf':
-      stats[2] += 1;
-      moveSpeed = 8 + stats[3];
+      stats[2].mod += 1;
+      moveSpeed = 8 + stats[3].mod;
       break;
     case 'Elf':
-      stats[3] += 1;
-      moveSpeed = 12 + stats[3];
+      stats[3].mod += 1;
+      moveSpeed = 12 + stats[3].mod;
       break;
     case 'Gnome':
-      stats[3] += 1;
-      moveSpeed = 8 + stats[3];
+      stats[3].mod += 1;
+      moveSpeed = 8 + stats[3].mod;
       break;
     case 'Halfling':
-      stats[3] += 1;
-      moveSpeed = 8 + stats[3];
+      stats[3].mod += 1;
+      moveSpeed = 8 + stats[3].mod;
       break;
     case 'Human':
-      stats[4] += 1;
-      moveSpeed = 10 + stats[3];
+      stats[4].mod += 1;
+      moveSpeed = 10 + stats[3].mod;
       break;
     case 'Orc':
-      stats[7] += 1;
-      moveSpeed = 10 + stats[3];
+      stats[7].mod += 1;
+      moveSpeed = 10 + stats[3].mod;
       break;
     default:
       break;
@@ -130,15 +131,15 @@ const makeChar = (req, res) => {
 
   switch (req.body.class) {
     case 'Mage':
-      startHealth = 20 + stats[2] + (Math.floor(Math.random() * 6) + 1);
+      startHealth = 20 + stats[2].mod + (Math.floor(Math.random() * 6) + 1);
       inv[3] = 'arcane device';
       break;
     case 'Warrior':
-      startHealth = 30 + stats[2] + (Math.floor(Math.random() * 6) + 1);
+      startHealth = 30 + stats[2].mod + (Math.floor(Math.random() * 6) + 1);
       inv[3] = 'heavy leather armor';
       break;
     case 'Rogue':
-      startHealth = 25 + stats[2] + (Math.floor(Math.random() * 6) + 1);
+      startHealth = 25 + stats[2].mod + (Math.floor(Math.random() * 6) + 1);
       inv[3] = 'leather armor';
       break;
     default:
@@ -265,7 +266,7 @@ const makeChar = (req, res) => {
       break;
   }
   // gets a starting defence value
-  const def = 10 + stats[3];
+  const def = 10 + stats[3].mod;
 
   const characterData = {
     // form data

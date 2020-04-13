@@ -194,23 +194,23 @@ var CharList = function CharList(props) {
         className: "stats"
       }, " Stats: "), /*#__PURE__*/React.createElement("p", {
         className: "stats"
-      }, "Accuracy: ", _char.accuracy), /*#__PURE__*/React.createElement("p", {
+      }, "Accuracy: ", _char.accuracy.mod), /*#__PURE__*/React.createElement("p", {
         className: "stats"
-      }, "Communication: ", _char.communication), /*#__PURE__*/React.createElement("p", {
+      }, "Communication: ", _char.communication.mod), /*#__PURE__*/React.createElement("p", {
         className: "stats"
-      }, "Constitution: ", _char.constitution), /*#__PURE__*/React.createElement("p", {
+      }, "Constitution: ", _char.constitution.mod), /*#__PURE__*/React.createElement("p", {
         className: "stats"
-      }, "Dexterity: ", _char.dexterity), /*#__PURE__*/React.createElement("p", {
+      }, "Dexterity: ", _char.dexterity.mod), /*#__PURE__*/React.createElement("p", {
         className: "stats"
-      }, "Fighting: ", _char.fighting), /*#__PURE__*/React.createElement("p", {
+      }, "Fighting: ", _char.fighting.mod), /*#__PURE__*/React.createElement("p", {
         className: "stats"
-      }, "Intelligence: ", _char.intelligence), /*#__PURE__*/React.createElement("p", {
+      }, "Intelligence: ", _char.intelligence.mod), /*#__PURE__*/React.createElement("p", {
         className: "stats"
-      }, "Perception: ", _char.perception), /*#__PURE__*/React.createElement("p", {
+      }, "Perception: ", _char.perception.mod), /*#__PURE__*/React.createElement("p", {
         className: "stats"
-      }, "Strength: ", _char.strength), /*#__PURE__*/React.createElement("p", {
+      }, "Strength: ", _char.strength.mod), /*#__PURE__*/React.createElement("p", {
         className: "stats"
-      }, "Willpower: ", _char.willpower), /*#__PURE__*/React.createElement("h4", null, "Current Money(SP): ", _char.money), /*#__PURE__*/React.createElement("h4", null, "Inventory"), /*#__PURE__*/React.createElement("ul", null, inv))
+      }, "Willpower: ", _char.willpower.mod), /*#__PURE__*/React.createElement("h4", null, "Current Money(SP): ", _char.money), /*#__PURE__*/React.createElement("h4", null, "Inventory"), /*#__PURE__*/React.createElement("ul", null, inv))
     );
   });
   return (/*#__PURE__*/React.createElement("div", {
