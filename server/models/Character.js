@@ -151,10 +151,10 @@ CharSchema.statics.levelUp = (ownerID, query) => {
 
     // updates character health based on their new level
     if (character.level < 11) {
-      newHealth = character.health + character.constitution
+      newHealth = character.health + character.constitution.mod
                 + (Math.floor(Math.random() * 6) + 1);
     } else {
-      newHealth = character.health + character.constitution;
+      newHealth = character.health + character.constitution.mod;
     }
 
     // needs to have player choice somehow - maybe a popup or redirect?
@@ -172,7 +172,7 @@ CharSchema.statics.levelUp = (ownerID, query) => {
     }
 
     CharModel.collection.updateOne(search,
-      { $set: { level: newLevel }, $set: { health: newHealth } });
+      { $set: { level: newLevel, health: newHealth } });
   });
 };
 
