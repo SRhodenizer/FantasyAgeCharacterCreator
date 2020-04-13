@@ -1,15 +1,13 @@
-const handleDomo = (e) => {
+const handleCharacter = (e) => {
     e.preventDefault();
     
-    $("#domoMessage").animate({width:'hide'},350);
-    
-    if($("#domoName").val() == '' || $("#domoAge").val() == ''|| $("#domoLevel").val() == ''){
+    if($("#name").val() == '' || $("#age").val() == ''|| $("#level").val() == ''){
         handleError("RAWR! All fields are required");
         return false;
     }
     
-    sendAjax('POST', $("#domoForm").attr("action"), $("#domoForm").serialize(),function(){
-       loadDomosFromServer(); 
+    sendAjax('POST', $("#characterForm").attr("action"), $("#characterForm").serialize(),function(){
+       loadCharsFromServer(); 
     });
     
     return false;
@@ -19,82 +17,162 @@ const handleClick = (e) =>{
     e.preventDefault();
     
     //send the ajax for the button's function
-    sendAjax('POST','/removeDomo', {_csrf: document.querySelector('#csrf').value,query:document.querySelector('#removeDomoName').value});
+    sendAjax('POST','/remove', {_csrf: document.querySelector('#csrf').value,query:document.querySelector('#removeCharName').value});
     
-    loadDomosFromServer();
+    loadCharsFromServer();
     
     return false;
 };
 
-const DomoForm = (props) => {
+const levelUp = (e) =>{
+    e.preventDefault();
+    
+    //send the ajax for the button's function
+    sendAjax('POST','/levelUp', {_csrf: document.querySelector('#csrf').value,query:document.querySelector('#removeCharName').value},function(){  
+       
+        loadCharsFromServer();
+    
+    });
+    
+    
+    return false;
+};
+
+const CharForm = (props) => {
     return(
-        <form id="domoForm"
-            onSubmit={handleDomo}
-            name="domoForm"
+        <form id="characterForm"
+            onSubmit={handleCharacter}
+            name="charForm"
             action="/maker"
             method="POST"
-            className="domoForm"
+            className="charForm"
         >
+         
         <label htmlFor="name">Name: </label>
-        <input id="domoName" type="text" name="name" placeholder="Domo Name"/>
-        <label htmlFor="age">Age: </label>
-        <input id="domoAge" type="text" name="age" placeholder="Domo Age"/>
+        <input id="charName" type="text" name="name" placeholder="Character's Name"/>
+         
+        <label htmlFor="race">Race: </label>
+        <select id="charRace" name="race">
+            <option value="null">Select Race</option>
+            <option value="Dwarf">Dwarf</option>
+            <option value="Elf">Elf</option>
+            <option value="Gnome">Gnome</option>
+            <option value="Halfling">Halfling</option>
+            <option value="Human">Human</option>
+            <option value="Orc">Orc</option>
+        </select>
+         
+        <label htmlFor="class">Class: </label>
+        <select id="charClass" name="class">
+            <option value="null">Select Class</option>
+            <option value="Mage">Mage</option>
+            <option value="Warrior">Warrior</option>
+            <option value="Rogue">Rogue</option>
+        </select>
+         
         <label htmlFor="level">Lvl: </label>
-        <input id="domoLevel" type="text" name="level" placeholder="Domo Level"/>
+        <input id="charLevel" type="text" name="level" placeholder="Character's Level"/>
+         
+        <label htmlFor="age">Age: </label>
+        <input id="charAge" type="text" name="age" placeholder="Character's Age"/>
+         
         <input id="csrf" type="hidden" name="_csrf" value={props.csrf} />
-        <input className="makeDomoSubmit" type="submit" value="Make Domo" />
-        <input className="removeDomoSubmit" type="button" value="Remove Domo" onClick={handleClick}/>
-        <input id="removeDomoName" type="text" name="removeName" placeholder="Domo Name to Remove"/>
+        
+        <input className="makeSubmit" type="submit" value="Make Character" />
+        <input className="removeSubmit" type="button" value="Level Up" onClick={levelUp}/>
+        <input className="removeSubmit" type="button" value="Delete Character" onClick={handleClick}/>
+        <input id="removeCharName" type="text" name="removeName" placeholder="Name of Char to Remove"/>
         </form>
     );  
 };
 
-const DomoList = function(props){
-    if(props.domos.length === 0){
+const CharList = function(props){
+    if(props.chars.length === 0){
         return(
-            <div className="domoList">
-                <h3 className="emptyDomo">No Domos yet</h3>
+            <div className="charList">
+                <h3 className="empty">No Characters Yet</h3>
             </div>
         );
     }
     
-    const domoNodes = props.domos.map(function(domo){
+    const charNodes = props.chars.map(function(char){
+        //changes the logo based on character class 
+        let image;
+        switch(char.class){
+            case 'Warrior':
+                image = '/assets/img/warrior.png';
+                break;
+            case 'Mage':
+                image = '/assets/img/wizard.png';
+                break;
+            case 'Rogue':
+                image = '/assets/img/rogue.jpg';
+                break;
+            default:
+                break;
+        }
+        
+        //maps the character's inventory into an unordered list
+        let inv = char.inventory.map((item, key)=>
+            <li key={item}>{item}</li> 
+        );
+        
+        
         return(
-            <div key={domo._id} className="domo">
-                <img src="/assets/img/domoface.jpeg" alt="domo face" className="domoFace" />
-                <h3 className="domoName">Name: {domo.name}</h3>
-                <h3 className="domoAge">Age: {domo.age}</h3>
-                <h3 className="domoLevel">Level: {domo.level}</h3>
+            <div key={char._id} className="char">
+                <img src={image} alt="class logo" className="classLogo" />
+                <h3 className="name">Name: {char.name}</h3>
+                <h3 className="age">Age: {char.age}</h3>
+                <h3 className="level">Health: {char.health}</h3>
+                <h3 className="level">Defence: {char.defence}</h3>
+                <h3 className="level">Race: {char.race}</h3>
+                <h3 className="level">Background: {char.background}</h3>
+                <h3 className="level">Class: {char.class}</h3>
+                <h3 className="level">Level: {char.level}</h3>
+                <h3 className="speed">Movement Speed: {char.speed}</h3>
+                <h3 className="stats"> Stats: </h3>
+                <p className="stats">Accuracy: {char.accuracy}</p>
+                <p className="stats">Communication: {char.communication}</p>
+                <p className="stats">Constitution: {char.constitution}</p>
+                <p className="stats">Dexterity: {char.dexterity}</p>
+                <p className="stats">Fighting: {char.fighting}</p>
+                <p className="stats">Intelligence: {char.intelligence}</p>
+                <p className="stats">Perception: {char.perception}</p>
+                <p className="stats">Strength: {char.strength}</p>
+                <p className="stats">Willpower: {char.willpower}</p>
+                <h4>Current Money(SP): {char.money}</h4>
+                <h4>Inventory</h4>
+                <ul>{inv}</ul>
             </div>
             
         );
     });
     
     return (
-        <div className="domoList">
-            {domoNodes}
+        <div className="charList">
+            {charNodes}
         </div>
     );
 };
 
-const loadDomosFromServer = () => {
-    sendAjax('GET','/getDomos',null, (data)=>{
+const loadCharsFromServer = () => {
+    sendAjax('GET','/getChars',null, (data)=>{
        ReactDOM.render(
-            <DomoList domos={data.domos}/>, document.querySelector("#domos")
+            <CharList chars={data.chars}/>, document.querySelector("#chars")
        ); 
     });  
 };
 
 const setup = function(csrf){
     ReactDOM.render(
-        <DomoForm csrf={csrf} />, document.querySelector("#makeDomo")
+        <CharForm csrf={csrf} />, document.querySelector("#makeChar")
     );
     
     ReactDOM.render(
-        <DomoList domos={[]} />, document.querySelector("#domos")
+        <CharList chars={[]} />, document.querySelector("#chars")
     );
     
-    loadDomosFromServer();
+    loadCharsFromServer();
 };
 
 const getToken = () => {
