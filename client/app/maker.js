@@ -274,6 +274,9 @@ const loadCharsFromServer = () => {
 
 const createCharCreatorWindow = (csrf) =>{
     
+    
+    currPage = 'create';
+    
     const gameButton = document.querySelector("#gameButton"); 
     
     const character = document.querySelector('#chars');
@@ -296,7 +299,7 @@ const createCharCreatorWindow = (csrf) =>{
     gameButton.addEventListener("click", (e) =>{
         e.preventDefault();
         createGameWindow(csrf);
-        currPage = 'game';
+        
         console.log(currPage);
         return false;
     });
@@ -304,6 +307,8 @@ const createCharCreatorWindow = (csrf) =>{
 }
 
 const createGameWindow = (csrf) =>{
+    
+    currPage = 'game';
     
     const creatorButton = document.querySelector("#creatorButton");
     
@@ -319,16 +324,11 @@ const createGameWindow = (csrf) =>{
         <CharList chars={[]} />, document.querySelector("#chars")
     );
     
-//   ReactDOM.render( 
-//       GameForm({csrf}), document.querySelector('#makeChar')
-//   );
-    
     loadCharsFromServer();
     
      creatorButton.addEventListener("click", (e) =>{
         e.preventDefault();
         createCharCreatorWindow(csrf);
-        currPage = 'create';
         console.log(currPage);
         return false;
     });

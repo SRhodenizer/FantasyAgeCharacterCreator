@@ -340,6 +340,7 @@ var loadCharsFromServer = function loadCharsFromServer() {
 };
 
 var createCharCreatorWindow = function createCharCreatorWindow(csrf) {
+  currPage = 'create';
   var gameButton = document.querySelector("#gameButton");
   var character = document.querySelector('#chars');
   character.innerHTML = '';
@@ -354,13 +355,13 @@ var createCharCreatorWindow = function createCharCreatorWindow(csrf) {
   gameButton.addEventListener("click", function (e) {
     e.preventDefault();
     createGameWindow(csrf);
-    currPage = 'game';
     console.log(currPage);
     return false;
   });
 };
 
 var createGameWindow = function createGameWindow(csrf) {
+  currPage = 'game';
   var creatorButton = document.querySelector("#creatorButton");
   var form = document.querySelector('#makeChar');
   form.innerHTML = '';
@@ -369,15 +370,11 @@ var createGameWindow = function createGameWindow(csrf) {
   }), document.querySelector("#makeChar"));
   ReactDOM.render( /*#__PURE__*/React.createElement(CharList, {
     chars: []
-  }), document.querySelector("#chars")); //   ReactDOM.render( 
-  //       GameForm({csrf}), document.querySelector('#makeChar')
-  //   );
-
+  }), document.querySelector("#chars"));
   loadCharsFromServer();
   creatorButton.addEventListener("click", function (e) {
     e.preventDefault();
     createCharCreatorWindow(csrf);
-    currPage = 'create';
     console.log(currPage);
     return false;
   });

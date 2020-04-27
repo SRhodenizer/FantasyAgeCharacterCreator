@@ -162,6 +162,18 @@ const changePassword = (request, response) => {
   });
 };
 
+const getNotFound = (req, res) =>{
+    res.redirect('/getNotFoundPage');
+};
+
+const getNotFoundPage = (req, res) =>{
+     res.render('notFound', {
+    csrfToken: req.csrfToken(),
+  });
+};
+
+module.exports.getNotFound = getNotFound;
+module.exports.getNotFoundPage = getNotFoundPage;
 module.exports.loginPage = loginPage;
 module.exports.login = login;
 module.exports.logout = logout;

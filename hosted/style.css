@@ -272,6 +272,10 @@ nav:nth-child(1) {
     height: 100%
 }
 
+.charList p{
+    font-size: 20px;
+}
+
 .char {
     width: 95%;
     margin: 0 auto;
@@ -457,4 +461,19 @@ h3.speed {
 
 .char:last-child {
     margin-bottom:10px;
+}
+
+#notFound {
+    font-family: permanent marker;
+    background-image: url(img/bookCover.jpg);
+    background-size: cover;
+    color: white;
+    font-size: 30px;
+    text-shadow: 3px 3px black;
+    text-align: center;
+    height: 70%;
+    width:50%;
+    margin-left: 25%;
+    margin-top: 1%;
+    padding-top: 10%;
 }
