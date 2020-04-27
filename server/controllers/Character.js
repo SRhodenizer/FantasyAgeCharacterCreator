@@ -636,20 +636,16 @@ const makeChar = (req, res) => {
   return charPromise;
 };
 
-const getCharacter = (request, response) =>{
-    const req = request;
-    const res = response;
-    
-    let search = {
-        name: req.body.name,
-        owner: req.session.account._id,
-    }
-    
-    Char.CharModel.find(search).then((result)=>{
-        return res.json(result);
-    });
-    
-    
+const getCharacter = (request, response) => {
+  const req = request;
+  const res = response;
+
+  const search = {
+    name: req.body.name,
+    owner: req.session.account._id,
+  };
+
+  Char.CharModel.find(search).then((result) => res.json(result));
 };
 
 const getCharacters = (request, response) => {

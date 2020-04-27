@@ -53,9 +53,9 @@ var CharForm = function CharForm(props) {
         name: "gameForm",
         action: "/getChar",
         method: "POST",
-        className: "gameForm"
+        className: "charForm"
       }, /*#__PURE__*/React.createElement("input", {
-        className: "removeSubmit",
+        className: "makeSubmit",
         type: "button",
         value: "Level Up",
         onClick: levelUp
@@ -130,14 +130,14 @@ var CharForm = function CharForm(props) {
         name: "level",
         min: "1",
         max: "20",
-        placeholder: "Start Level"
+        placeholder: "Lvl"
       }), /*#__PURE__*/React.createElement("label", {
         htmlFor: "age"
       }, "Age: "), /*#__PURE__*/React.createElement("input", {
         id: "charAge",
         type: "text",
         name: "age",
-        placeholder: "Character's Age"
+        placeholder: "Age"
       }), /*#__PURE__*/React.createElement("input", {
         id: "csrf",
         type: "hidden",
@@ -156,7 +156,7 @@ var CharForm = function CharForm(props) {
         id: "removeCharName",
         type: "text",
         name: "removeName",
-        placeholder: "Name of Char to Remove"
+        placeholder: "Delete Character"
       }))
     );
   }
@@ -164,12 +164,21 @@ var CharForm = function CharForm(props) {
 
 var CharList = function CharList(props) {
   if (props.chars.length === 0) {
-    return (/*#__PURE__*/React.createElement("div", {
-        className: "charList"
-      }, /*#__PURE__*/React.createElement("h3", {
-        className: "empty"
-      }, "No Characters Yet"))
-    );
+    if (currPage === 'create') {
+      return (/*#__PURE__*/React.createElement("div", {
+          className: "charList"
+        }, /*#__PURE__*/React.createElement("h3", {
+          className: "empty"
+        }, "No Characters Yet"))
+      );
+    } else {
+      return (/*#__PURE__*/React.createElement("div", {
+          className: "charList"
+        }, /*#__PURE__*/React.createElement("h3", {
+          className: "empty"
+        }, "Select Character to Display"))
+      );
+    }
   }
 
   var charNodes;
@@ -352,6 +361,7 @@ var loadCharsFromServer = function loadCharsFromServer() {
 var getActiveChar = function getActiveChar(e) {
   e.preventDefault();
   sendAjax('POST', '/getChar', $("#gameForm").serialize(), function (data) {
+    currChar = data;
     ReactDOM.render( /*#__PURE__*/React.createElement(CharList, {
       chars: data
     }), document.querySelector("#chars"));

@@ -57,9 +57,9 @@ const CharForm = (props) => {
             name="gameForm"
             action="/getChar"
             method="POST"
-            className="gameForm"
+            className="charForm"
          >
-         <input className="removeSubmit" type="button" value="Level Up" onClick={levelUp}/>
+         <input className="makeSubmit" type="button" value="Level Up" onClick={levelUp}/>
          <input className="activeName" type="text" name="name" placeholder="Name of Character"/>
          <input className="makeSubmit" type="submit" value="Find Character" />
          
@@ -102,16 +102,16 @@ const CharForm = (props) => {
         </select>
         
         <label htmlFor="level">Lvl: </label>
-       <input id="charLevel" type="number" name="level" min="1" max="20" placeholder="Start Level"/>
+       <input id="charLevel" type="number" name="level" min="1" max="20" placeholder="Lvl"/>
          
         <label htmlFor="age">Age: </label>
-        <input id="charAge" type="text" name="age" placeholder="Character's Age"/>
+        <input id="charAge" type="text" name="age" placeholder="Age"/>
          
         <input id="csrf" type="hidden" name="_csrf" value={props.csrf} />
         
         <input className="makeSubmit" type="submit" value="Make Character" />
         <input className="removeSubmit" type="button" value="Delete Character" onClick={handleClick}/>
-        <input id="removeCharName" type="text" name="removeName" placeholder="Name of Char to Remove"/>
+        <input id="removeCharName" type="text" name="removeName" placeholder="Delete Character"/>
         </form>
     ); 
     }
@@ -123,11 +123,20 @@ const CharForm = (props) => {
 const CharList = function(props){
     
      if(props.chars.length === 0){
-        return(
-            <div className="charList">
+         if(currPage === 'create'){
+            return(
+                <div className="charList">
                 <h3 className="empty">No Characters Yet</h3>
-            </div>
-        );
+                </div>
+            );
+         }else{
+            return(
+                <div className="charList">
+                <h3 className="empty">Select Character to Display</h3>
+                </div>
+            );
+         }
+       
     }
     
     let charNodes;
@@ -262,7 +271,7 @@ const CharList = function(props){
     }
     
     return (
-        <div className="charList">                            
+        <div className="charList">  
             {charNodes}
         </div>
     );
@@ -279,6 +288,7 @@ const loadCharsFromServer = () => {
 const getActiveChar = (e) =>{
   e.preventDefault();
   sendAjax('POST','/getChar',$("#gameForm").serialize(),function (data){
+       currChar = data;
        ReactDOM.render(
             <CharList chars={data}/>, document.querySelector("#chars")
        );
