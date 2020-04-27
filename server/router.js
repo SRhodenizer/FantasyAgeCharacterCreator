@@ -18,7 +18,7 @@ const router = (app) => {
   app.post('/levelUp', mid.requiresLogin, controllers.Char.levelUp);
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
   app.get('/getNotFoundPage', controllers.Account.getNotFoundPage);
-  app.get('/*',controllers.Account.getNotFound);
+  app.get('/*', controllers.Account.getNotFound);
 };
 
 module.exports = router;

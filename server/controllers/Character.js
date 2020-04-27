@@ -45,7 +45,7 @@ const gamePage = (req, res) => {
 const makeChar = (req, res) => {
   if (!req.body.name || !req.body.age || !req.body.level || !req.body.class || !req.body.race) {
     return res.status(400).json({
-      error: 'RAWR! All fields are required.',
+      error: 'All fields are required.',
     });
   }
 

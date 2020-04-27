@@ -37,7 +37,7 @@ const login = (request, response) => {
 
   if (!username || !password) {
     return res.status(400).json({
-      error: 'RAWR! All fields are required.',
+      error: 'All fields are required.',
     });
   }
 
@@ -67,13 +67,13 @@ const signup = (request, response) => {
 
   if (!req.body.username || !req.body.pass || !req.body.pass2) {
     return res.status(400).json({
-      error: 'RAWR! All fields are required.',
+      error: "All fields are required.',
     });
   }
 
   if (req.body.pass !== req.body.pass2) {
     return res.status(400).json({
-      error: 'RAWR! Passwords do not match.',
+      error: 'Passwords do not match.',
     });
   }
 
@@ -162,12 +162,12 @@ const changePassword = (request, response) => {
   });
 };
 
-const getNotFound = (req, res) =>{
-    res.redirect('/getNotFoundPage');
+const getNotFound = (req, res) => {
+  res.redirect('/getNotFoundPage');
 };
 
-const getNotFoundPage = (req, res) =>{
-     res.render('notFound', {
+const getNotFoundPage = (req, res) => {
+  res.render('notFound', {
     csrfToken: req.csrfToken(),
   });
 };
