@@ -1,6 +1,7 @@
 "use strict";
 
 var currPage = '';
+var currChar; //the current character being played 
 
 var handleCharacter = function handleCharacter(e) {
   e.preventDefault();
@@ -48,9 +49,9 @@ var CharForm = function CharForm(props) {
   if (currPage === 'game') {
     return (/*#__PURE__*/React.createElement("form", {
         id: "gameForm",
-        onSubmit: levelUp,
+        onSubmit: getActiveChar,
         name: "gameForm",
-        action: "/levelUp",
+        action: "/getChar",
         method: "POST",
         className: "gameForm"
       }, /*#__PURE__*/React.createElement("input", {
@@ -58,6 +59,15 @@ var CharForm = function CharForm(props) {
         type: "button",
         value: "Level Up",
         onClick: levelUp
+      }), /*#__PURE__*/React.createElement("input", {
+        className: "activeName",
+        type: "text",
+        name: "name",
+        placeholder: "Name of Character"
+      }), /*#__PURE__*/React.createElement("input", {
+        className: "makeSubmit",
+        type: "submit",
+        value: "Find Character"
       }), /*#__PURE__*/React.createElement("input", {
         id: "csrf",
         type: "hidden",
@@ -339,6 +349,15 @@ var loadCharsFromServer = function loadCharsFromServer() {
   });
 };
 
+var getActiveChar = function getActiveChar(e) {
+  e.preventDefault();
+  sendAjax('POST', '/getChar', $("#gameForm").serialize(), function (data) {
+    ReactDOM.render( /*#__PURE__*/React.createElement(CharList, {
+      chars: data
+    }), document.querySelector("#chars"));
+  });
+};
+
 var createCharCreatorWindow = function createCharCreatorWindow(csrf) {
   currPage = 'create';
   var gameButton = document.querySelector("#gameButton");
@@ -355,7 +374,6 @@ var createCharCreatorWindow = function createCharCreatorWindow(csrf) {
   gameButton.addEventListener("click", function (e) {
     e.preventDefault();
     createGameWindow(csrf);
-    console.log(currPage);
     return false;
   });
 };
@@ -370,12 +388,11 @@ var createGameWindow = function createGameWindow(csrf) {
   }), document.querySelector("#makeChar"));
   ReactDOM.render( /*#__PURE__*/React.createElement(CharList, {
     chars: []
-  }), document.querySelector("#chars"));
-  loadCharsFromServer();
+  }), document.querySelector("#chars")); //loadCharsFromServer();
+
   creatorButton.addEventListener("click", function (e) {
     e.preventDefault();
     createCharCreatorWindow(csrf);
-    console.log(currPage);
     return false;
   });
 };

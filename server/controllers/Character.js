@@ -636,6 +636,22 @@ const makeChar = (req, res) => {
   return charPromise;
 };
 
+const getCharacter = (request, response) =>{
+    const req = request;
+    const res = response;
+    
+    let search = {
+        name: req.body.name,
+        owner: req.session.account._id,
+    }
+    
+    Char.CharModel.find(search).then((result)=>{
+        return res.json(result);
+    });
+    
+    
+};
+
 const getCharacters = (request, response) => {
   const req = request;
   const res = response;
@@ -667,6 +683,7 @@ const levelUp = (request, response) => {
 module.exports.makerPage = makerPage;
 module.exports.gamePage = gamePage;
 module.exports.getCharacters = getCharacters;
+module.exports.getCharacter = getCharacter;
 module.exports.make = makeChar;
 module.exports.remove = removeChar;
 module.exports.levelUp = levelUp;

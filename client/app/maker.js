@@ -1,4 +1,5 @@
 let currPage = '';
+let currChar; //the current character being played 
 
 const handleCharacter = (e) => {
     e.preventDefault();
@@ -52,13 +53,16 @@ const CharForm = (props) => {
         return(
             
          <form id="gameForm"
-            onSubmit={levelUp}
+            onSubmit={getActiveChar}
             name="gameForm"
-            action="/levelUp"
+            action="/getChar"
             method="POST"
             className="gameForm"
          >
          <input className="removeSubmit" type="button" value="Level Up" onClick={levelUp}/>
+         <input className="activeName" type="text" name="name" placeholder="Name of Character"/>
+         <input className="makeSubmit" type="submit" value="Find Character" />
+         
          
          <input id="csrf" type="hidden" name="_csrf" value={props.csrf} />
          </form>
@@ -272,8 +276,16 @@ const loadCharsFromServer = () => {
     });  
 };
 
+const getActiveChar = (e) =>{
+  e.preventDefault();
+  sendAjax('POST','/getChar',$("#gameForm").serialize(),function (data){
+       ReactDOM.render(
+            <CharList chars={data}/>, document.querySelector("#chars")
+       );
+  });  
+};
+
 const createCharCreatorWindow = (csrf) =>{
-    
     
     currPage = 'create';
     
@@ -300,7 +312,6 @@ const createCharCreatorWindow = (csrf) =>{
         e.preventDefault();
         createGameWindow(csrf);
         
-        console.log(currPage);
         return false;
     });
     
@@ -324,12 +335,11 @@ const createGameWindow = (csrf) =>{
         <CharList chars={[]} />, document.querySelector("#chars")
     );
     
-    loadCharsFromServer();
+    //loadCharsFromServer();
     
      creatorButton.addEventListener("click", (e) =>{
         e.preventDefault();
         createCharCreatorWindow(csrf);
-        console.log(currPage);
         return false;
     });
 }

@@ -67,7 +67,7 @@ const signup = (request, response) => {
 
   if (!req.body.username || !req.body.pass || !req.body.pass2) {
     return res.status(400).json({
-      error: "All fields are required.',
+      error: "All fields are required.",
     });
   }
 
