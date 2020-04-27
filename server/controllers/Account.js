@@ -1,13 +1,25 @@
 const models = require('../models');
 
-const { Account } = models;
+const {
+  Account,
+} = models;
 
 const loginPage = (req, res) => {
-  res.render('login', { csrfToken: req.csrfToken() });
+  res.render('login', {
+    csrfToken: req.csrfToken(),
+  });
 };
 
 const signupPage = (req, res) => {
-  res.render('signup', { csrfToken: req.csrfToken() });
+  res.render('signup', {
+    csrfToken: req.csrfToken(),
+  });
+};
+
+const accountPage = (req, res) => {
+  res.render('account', {
+    csrfToken: req.csrfToken(),
+  });
 };
 
 const logout = (req, res) => {
@@ -109,9 +121,52 @@ const getToken = (request, response) => {
   res.json(csrfJSON);
 };
 
+const changePassword = (request, response) => {
+  const req = request;
+  const res = response;
+
+  if (!req.body.username || !req.body.pass || !req.body.pass2) {
+    return res.status(400).json({
+      error: 'All fields are required.',
+    });
+  }
+
+  if (req.body.pass !== req.body.pass2) {
+    return res.status(400).json({
+      error: 'Passwords do not match.',
+    });
+  }
+
+  if (req.body.username !== req.session.account.username) {
+    return res.status(400).json({
+      error: "Cannot change another user's password.",
+    });
+  }
+
+  Account.AccountModel.generateHash(req.body.pass, (salt, hash) => {
+    const accountData = {
+      username: req.body.username,
+      salt,
+      password: hash,
+    };
+
+    // get the username for searching
+    const search = {
+      username: req.body.username,
+    };
+
+    Account.AccountModel.collection.replaceOne(search, accountData);
+  });
+  return res.status(200).json({
+    message: 'Password successfully changed.',
+  });
+};
+
 module.exports.loginPage = loginPage;
 module.exports.login = login;
 module.exports.logout = logout;
 module.exports.signupPage = signupPage;
 module.exports.signup = signup;
 module.exports.getToken = getToken;
+module.exports.accountPage = accountPage;
+module.exports.changePassword = changePassword;

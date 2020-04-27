@@ -29,6 +29,7 @@ const CharSchema = new mongoose.Schema({
   level: {
     type: Number,
     min: 1,
+    max: 20,
     required: true,
   },
   health: {
@@ -100,6 +101,27 @@ const CharSchema = new mongoose.Schema({
     type: Number,
     min: 0,
     required: true,
+  },
+  talents: {
+    type: Array,
+    required: true,
+  },
+  languages: {
+    type: Array,
+    required: true,
+  },
+  abilities: {
+    type: Array,
+    required: true,
+  },
+  specialization: {
+    type: JSON,
+    required: false,
+  },
+  magicPoints: {
+    type: Number,
+    min: 0,
+    required: false,
   },
   owner: {
     type: mongoose.Schema.ObjectId,

@@ -2,6 +2,9 @@
 
 var handleLogin = function handleLogin(e) {
   e.preventDefault();
+  $("#domoMessage").animate({
+    width: 'hide'
+  }, 350);
 
   if ($("#user").val() == '' || $("#pass").val() == '') {
     handleError("RAWR! Username or password is empty");
@@ -15,6 +18,9 @@ var handleLogin = function handleLogin(e) {
 
 var handleSignup = function handleSignup(e) {
   e.preventDefault();
+  $("#domoMessage").animate({
+    width: 'hide'
+  }, 350);
 
   if ($("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == '') {
     handleError("RAWR! All fields required");
@@ -39,6 +45,7 @@ var LoginWindow = function LoginWindow(props) {
       method: "POST",
       className: "mainForm"
     }, /*#__PURE__*/React.createElement("label", {
+      id: "formLabel",
       htmlFor: "username"
     }, "Username: "), /*#__PURE__*/React.createElement("input", {
       id: "user",
@@ -46,6 +53,7 @@ var LoginWindow = function LoginWindow(props) {
       name: "username",
       placeholder: "username"
     }), /*#__PURE__*/React.createElement("label", {
+      id: "formLabel",
       htmlFor: "pass"
     }, "Password: "), /*#__PURE__*/React.createElement("input", {
       id: "pass",
@@ -73,6 +81,7 @@ var SignupWindow = function SignupWindow(props) {
       method: "POST",
       className: "mainForm"
     }, /*#__PURE__*/React.createElement("label", {
+      id: "formLabel",
       htmlFor: "username"
     }, "Username: "), /*#__PURE__*/React.createElement("input", {
       id: "user",
@@ -80,6 +89,7 @@ var SignupWindow = function SignupWindow(props) {
       name: "username",
       placeholder: "username"
     }), /*#__PURE__*/React.createElement("label", {
+      id: "formLabel",
       htmlFor: "pass"
     }, "Password: "), /*#__PURE__*/React.createElement("input", {
       id: "pass",
@@ -87,6 +97,7 @@ var SignupWindow = function SignupWindow(props) {
       name: "pass",
       placeholder: "password"
     }), /*#__PURE__*/React.createElement("label", {
+      id: "formLabel",
       htmlFor: "pass2"
     }, "Password: "), /*#__PURE__*/React.createElement("input", {
       id: "pass2",
@@ -146,9 +157,15 @@ $(document).ready(function () {
 
 var handleError = function handleError(message) {
   $("#errorMessage").text(message);
+  $("#domoMessage").animate({
+    width: 'toggle'
+  }, 350);
 };
 
 var redirect = function redirect(response) {
+  $("#domoMessage").animate({
+    width: 'hide'
+  }, 350);
   window.location = response.redirect;
 };
 

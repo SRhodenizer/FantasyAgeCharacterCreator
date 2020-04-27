@@ -1,9 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+
 html, body {
     height: 100%;
     width: 100%;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    background-image: url(img/orcs_and_ogre_minis.jpg);
+    background-repeat:no-repeat;
+    background-size: cover;
 }
 
 #logo {
@@ -17,7 +22,8 @@ html, body {
 nav {
     width: 100%;
     height: 50px;
-    background-color: #55acee;
+    background-image:url(img/banner.jpg);
+    background-repeat:no-repeat;
 }
 
 nav:nth-child(1) {
@@ -28,18 +34,24 @@ nav:nth-child(1) {
     padding: 5px;
     padding-top: 12px;
     padding-left: 20px;
-    color: white;
+    color: grey;
     font-size: 1.3em;
     float: left;
+    
 }
 
 .navlink a, .navlink a:link, .navlink a:visited, .navlink a:hover, .navlink a:active {
-    color: white;
-    text-decoration: none;
+    color: goldenrod;
+    font-family: permanent marker;
+    text-decoration:none;
+    text-emphasis: bold;
+    text-shadow: 3px 2px black;
     padding: 5px;
     border-radius: 4px;
-    background-color: #55acee;
-    transition: background-color 0.4s ease;
+    background-image:url(img/3-dice.png);
+    background-size:cover;
+    background-repeat:no-repeat;
+    width: 150px;
 }
 
 .navlink a:hover {
@@ -49,8 +61,6 @@ nav:nth-child(1) {
 
 .charForm {
     border: 2px solid #338acc;
-    height: 35px;
-    width: 1175px;
     margin-top:0px;
     padding-top:10px;
     background-color: #55acee;
@@ -67,13 +77,30 @@ nav:nth-child(1) {
     color: white;
 }
 
-.charForm input[type=text] {
+.charForm input[type=text]{
+    float:left;
+} 
+
+.charForm input[type=number] {
+    float:left;
+    width: 100px;
+}
+
+#charAge {
+    width: 100px;
+}
+
+#charRace{
+    float:left;
+} 
+
+#charClass{
     float:left;
 }
 
 #removeCharName {
     margin-left: 20px;
-    float: right;
+    float: left;
 }
 
 .makeSubmit {
@@ -99,7 +126,7 @@ nav:nth-child(1) {
 .removeSubmit {
     transition: background-color 0.4s ease;
     display: inline;
-    width: 110px;
+    width: 120px;
     background-color: #55acee;
     border-radius: 2px;
     color: white;
@@ -116,13 +143,34 @@ nav:nth-child(1) {
     background-color: #338acc;
 }
 
-
 .mainForm {
-    height: 300px;
-    width: 350px;
+    width: 500px;
+    height: 60%;
+    padding-top: 2%;
     margin: 0 auto;
-    padding-top: 350px;
+    text-align: center;
+    margin-top:50px;
     font-size: 1.2em;
+    background-image:url(img/paper.jpg);
+    background-size: cover;
+    font-family:permanent marker;
+}
+
+.mainForm input[type=text]{
+    font-family: permanent marker;
+}
+
+.mainForm input[type=password]{
+    font-family: permanent marker;
+}
+
+.mainForm input[type=submit]{
+    font-family: permanent marker;
+    width: auto;
+    background-image:url(img/3-dice.png);
+    background-size:cover;
+    color: goldenrod;
+    text-shadow: 3px 3px black;
 }
 
 .mainForm h3 {
@@ -133,7 +181,7 @@ nav:nth-child(1) {
     display: inline-block;
     width: 100px;
     margin-right: 10px;
-    text-align: right;
+    text-align: center;
     font-size: 1.2em;
 }
 
@@ -165,13 +213,18 @@ nav:nth-child(1) {
 #user, #pass, #pass2 {
     text-align: center;
     font-size: 1.1em;
-    width: 180px;
+    width: 300px;
     border-radius: 6px;
 }
 
 #user:focus, #pass:focus, #pass2:focus {
     outline: none;
     box-shadow: 0px 0px 1px 1px #55acee;
+}
+
+#formLabel{
+    width:300px;
+    text-align: center;
 }
 
 #speech {
@@ -198,13 +251,25 @@ nav:nth-child(1) {
     transform: rotate(330deg);
 }
 
+#chars p{
+    padding-top: 45px;
+    padding-left: 100px;
+}
+
 #chars {
     width: 40%;
     min-width: 400px;
     border: 2px solid #55acee;
     border-radius: 4px;
     margin: 0 auto;
-    margin-top: 100px;
+}
+
+.charList{
+    background-image: url(img/paper.jpg);
+    background-size: auto;
+    font-family: permanent marker;
+    padding-top: 10px;
+    height: 100%
 }
 
 .char {
@@ -212,29 +277,29 @@ nav:nth-child(1) {
     margin: 0 auto;
     margin-top: 2px;
     margin-bottom: 2px;
-    border: 2px solid #55acee;
     border-radius: 4px;
-    background-color: #55acee;
+    
     padding: 10px;
     min-height:60px;
     overflow: hidden;
+    font-family: 'Permanent Marker';
 }
 
-.char:hover {
+{
     transition: border-color 0.2s ease-out;
-    border-color: rgba(255,255,255, 0.8);
     transition: background-color 2.6s ease-out;
     background-color: #66bfff;
 }
 
 img.classLogo {
-    margin-left: 25px;
-    margin-right: 10px;
-    height: 50px;
-    width: 50px;
+    height: 75px;
+    width: 75px;
     border-radius: 4px;
-    margin-top:10px;
+    border: 3px solid black; 
     float:left;
+    position: relative;
+    left: -5px;
+    top: -5px;
 }
 
 h3.empty {
@@ -247,29 +312,144 @@ h3.empty {
 
 h3.name {
     float:left;
+    width: 400px;
+    font-weight: bold;
+    font-size: 1.5em;
+    position: relative;
+    left: -50px;
+    top: 110px;;
+}
+
+h3.class {
+    float: left;
+    width: 400px;
+    font-weight: bold;
+    font-size: 1.5em;
+    position: relative;
+    left: -50px;
+    top: 60px;
+}
+
+h3.past {
+    float: right;
     width: 200px;
     font-weight: bold;
-    padding-left: 65px;
-    font-size: 1.5em;
+    font-size: 1em;
+    position: relative;
+    text-align: right;
+    top: -10px;
 }
 
-
-h3.level {
-    float:left;
-    width: 100px;
+h3.hp {
+    float:right;
+    width: 200px;
     font-weight: bold;
-    padding-left: 10px;
     font-size: 1.5em;
+    position: relative;
+    text-align: center;
+    left:-50px;
+    top: 150px;
 }
 
-h3.age {
+h3.mp {
     float:left;
+    width: 200px;
+    font-weight: bold;
+    font-size: 1.5em;
+    position: relative;
+    text-align: center;
+    left:-100px;
+    top: 150px;
+}
+
+h3.def {
+    float:left;
+    width: 200px;
+    font-weight: bold;
+    font-size: 1.5em;
+    position: relative;
+    left: -50px;
+    top: 10px;
+}
+
+h3.speed {
+    float:right;
+    text-align: right;
+    width: 250px;
+    font-weight: bold;
+    font-size: 1.5em;
+    position: relative;
+    top: -70px;
+}
+
+.heading{
+    border: 5px;
+    float: left;
+    width: 430px;
+    margin-left:150px;
+    position: relative;
+    top: -770px;
+    padding-top: 10px;
+}
+
+.talent{
+    float: right;
+    text-align: center;
+    width: 450px;
+    margin-left: 80px;
+    position: relative;
+    top: -850px;
+    border: 5px solid black;
+    border-radius: 5px;
+}
+
+.talent ul li{
+    list-style-type: none;
+}
+
+.inventory{
+    float: right;
+    text-align: center;
+    width: 450px;
+    margin-left: 80px;
+    position: relative;
+    top: -850px;
+    border: 5px solid black;
+    border-radius: 5px;
+}
+
+.inventory ul li{
+    list-style-type: none;
+}
+
+
+.stats{
+    position: relative;
+    left: -15px;
+    border: 5px;
+    margin-top: 100px;
+    padding-left:5px;
+}
+
+.stats h5{
+    font-size: 11px;
+    margin-top:-10px;
+}
+
+.stats ul{
+    position: relative;
+    left: 10px;
+    top:-30px;
+}
+
+.focus{
+    font-size: 10px;
+    list-style-type: none;
     text-align: left;
-    width: 100px;
-    font-weight: bold;
-    padding-right: 10px;
-    font-size: 1.5em;
+    position: relative;
+    left: -20px;
 }
+
 
 .char:first-child {
     margin-top: 10px;

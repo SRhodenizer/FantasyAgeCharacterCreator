@@ -1,15 +1,22 @@
+let currPage = '';
+
 const handleCharacter = (e) => {
     e.preventDefault();
     
     if($("#name").val() == '' || $("#age").val() == ''|| $("#level").val() == ''){
-        handleError("RAWR! All fields are required");
+        handleError("All fields are required.");
+        return false;
+    }
+    
+    if($('#level').val() > 20 || $('#level').val() < 1){
+        handleError("Level has to be from 1 to 20.");
         return false;
     }
     
     sendAjax('POST', $("#characterForm").attr("action"), $("#characterForm").serialize(),function(){
-       loadCharsFromServer(); 
+         loadCharsFromServer();
     });
-    
+
     return false;
 };
 
@@ -39,7 +46,27 @@ const levelUp = (e) =>{
 };
 
 const CharForm = (props) => {
-    return(
+   
+    if(currPage === 'game'){
+        
+        return(
+            
+         <form id="gameForm"
+            onSubmit={levelUp}
+            name="gameForm"
+            action="/levelUp"
+            method="POST"
+            className="gameForm"
+         >
+         <input className="removeSubmit" type="button" value="Level Up" onClick={levelUp}/>
+         
+         <input id="csrf" type="hidden" name="_csrf" value={props.csrf} />
+         </form>
+        );
+ 
+    }else{
+               
+        return(
         <form id="characterForm"
             onSubmit={handleCharacter}
             name="charForm"
@@ -69,9 +96,9 @@ const CharForm = (props) => {
             <option value="Warrior">Warrior</option>
             <option value="Rogue">Rogue</option>
         </select>
-         
+        
         <label htmlFor="level">Lvl: </label>
-        <input id="charLevel" type="text" name="level" placeholder="Character's Level"/>
+       <input id="charLevel" type="number" name="level" min="1" max="20" placeholder="Start Level"/>
          
         <label htmlFor="age">Age: </label>
         <input id="charAge" type="text" name="age" placeholder="Character's Age"/>
@@ -79,15 +106,19 @@ const CharForm = (props) => {
         <input id="csrf" type="hidden" name="_csrf" value={props.csrf} />
         
         <input className="makeSubmit" type="submit" value="Make Character" />
-        <input className="removeSubmit" type="button" value="Level Up" onClick={levelUp}/>
         <input className="removeSubmit" type="button" value="Delete Character" onClick={handleClick}/>
         <input id="removeCharName" type="text" name="removeName" placeholder="Name of Char to Remove"/>
         </form>
-    );  
+    ); 
+    }
+    
+     
 };
 
+
 const CharList = function(props){
-    if(props.chars.length === 0){
+    
+     if(props.chars.length === 0){
         return(
             <div className="charList">
                 <h3 className="empty">No Characters Yet</h3>
@@ -95,14 +126,19 @@ const CharList = function(props){
         );
     }
     
-    const charNodes = props.chars.map(function(char){
+    let charNodes;
+    
+    if(currPage === 'game'){
+    charNodes = props.chars.map(function(char){
         //changes the logo based on character class 
         let image;
+        let mp;
         switch(char.class){
             case 'Warrior':
                 image = '/assets/img/warrior.png';
                 break;
             case 'Mage':
+                mp = 'Magic';
                 image = '/assets/img/wizard.png';
                 break;
             case 'Rogue':
@@ -117,39 +153,112 @@ const CharList = function(props){
             <li key={item}>{item}</li> 
         );
         
+         let acc = char.accuracy.focus.map((item, key)=>
+            <li key={item}>{item}</li>                        
+        );
+        
+        let com = char.communication.focus.map((item, key)=>
+            <li key={item}>{item}</li>                        
+        );
+        
+         let con = char.constitution.focus.map((item, key)=>
+            <li key={item}>{item}</li>                        
+        );
+        
+         let dex = char.dexterity.focus.map((item, key)=>
+            <li key={item}>{item}</li>                        
+        );
+        
+         let fig = char.fighting.focus.map((item, key)=>
+            <li key={item}>{item}</li>                        
+        );
+        
+         let intel = char.intelligence.focus.map((item, key)=>
+            <li key={item}>{item}</li>                        
+        );
+        
+         let per = char.perception.focus.map((item, key)=>
+            <li key={item}>{item}</li>                        
+        );
+        
+         let str = char.strength.focus.map((item, key)=>
+            <li key={item}>{item}</li>                        
+        );
+        
+         let wil = char.willpower.focus.map((item, key)=>
+            <li key={item}>{item}</li>                        
+        );
+        
+        let talent = char.talents.map((item, key)=>
+            <li key={item}>{item.name} ({item.level})</li>
+        );
         
         return(
             <div key={char._id} className="char">
                 <img src={image} alt="class logo" className="classLogo" />
-                <h3 className="name">Name: {char.name}</h3>
-                <h3 className="age">Age: {char.age}</h3>
-                <h3 className="level">Health: {char.health}</h3>
-                <h3 className="level">Defence: {char.defence}</h3>
-                <h3 className="level">Race: {char.race}</h3>
-                <h3 className="level">Background: {char.background}</h3>
-                <h3 className="level">Class: {char.class}</h3>
-                <h3 className="level">Level: {char.level}</h3>
-                <h3 className="speed">Movement Speed: {char.speed}</h3>
-                <h3 className="stats"> Stats: </h3>
-                <p className="stats">Accuracy: {char.accuracy.mod}</p>
-                <p className="stats">Communication: {char.communication.mod}</p>
-                <p className="stats">Constitution: {char.constitution.mod}</p>
-                <p className="stats">Dexterity: {char.dexterity.mod}</p>
-                <p className="stats">Fighting: {char.fighting.mod}</p>
-                <p className="stats">Intelligence: {char.intelligence.mod}</p>
-                <p className="stats">Perception: {char.perception.mod}</p>
-                <p className="stats">Strength: {char.strength.mod}</p>
-                <p className="stats">Willpower: {char.willpower.mod}</p>
-                <h4>Current Money(SP): {char.money}</h4>
-                <h4>Inventory</h4>
-                <ul>{inv}</ul>
+            
+               <div className = 'stats'>
+                     <h5>Accuracy: {char.accuracy.mod}</h5>
+                     <h5>Focuses</h5>
+                     <ul className ='focus'>{acc}</ul>
+                     <h5>Communication: {char.communication.mod}</h5>
+                     <h5>Focuses</h5>
+                     <ul className ='focus'>{com}</ul>
+                     <h5>Constitution: {char.constitution.mod}</h5>
+                     <h5>Focuses</h5>
+                     <ul className ='focus'>{con}</ul>
+                     <h5>Dexterity: {char.dexterity.mod}</h5>
+                     <h5>Focuses</h5>
+                     <ul className ='focus'>{dex}</ul>
+                     <h5>Fighting: {char.fighting.mod}</h5>
+                     <h5>Focuses</h5>
+                     <ul className ='focus'>{fig}</ul>
+                     <h5>Intelligence: {char.intelligence.mod}</h5>
+                     <h5>Focuses</h5>
+                     <ul className ='focus'>{intel}</ul>
+                     <h5>Perception: {char.perception.mod}</h5>
+                     <h5>Focuses</h5>
+                     <ul className ='focus'>{per}</ul>
+                     <h5>Strength: {char.strength.mod}</h5>
+                     <h5>Focuses</h5>
+                     <ul className ='focus'>{str}</ul>
+                     <h5>Willpower: {char.willpower.mod}</h5>
+                     <h5>Focuses</h5>
+                     <ul className ='focus'>{wil}</ul>
+                </div>
+            
+                <div className='heading'>
+                    <h3 className="hp">Health: {char.health}</h3>
+                    <h3 className="mp">{mp} {char.magicPoints}</h3>
+                    <h3 className="name">Name: {char.name}</h3>
+                    <h3 className="class">Level {char.level} {char.race} {char.class}</h3>
+                    <h3 className="past">Background: {char.background}</h3>
+                    <h3 className="def">Defence: {char.defence}</h3>
+                    <h3 className="speed">Movement Speed: {char.speed}</h3>
+                </div>
+            
+                <div className='talent'>
+                    <h3>Talents</h3>
+                    <ul>{talent}</ul>
+                </div>
+            
+                <div className='inventory'>
+                    <h3>Inventory</h3>
+                    <h4 className='money'>Current Money(SP): {char.money}</h4>
+                    <ul>{inv}</ul>
+                </div>
             </div>
             
         );
     });
+    }else{
+        charNodes =  props.chars.map(function(char){
+            return <p>{char.name}, the Level {char.level} {char.race} {char.class}.</p>
+        });
+    }
     
     return (
-        <div className="charList">
+        <div className="charList">                            
             {charNodes}
         </div>
     );
@@ -163,16 +272,72 @@ const loadCharsFromServer = () => {
     });  
 };
 
-const setup = function(csrf){
+const createCharCreatorWindow = (csrf) =>{
+    
+    const gameButton = document.querySelector("#gameButton"); 
+    
+    const character = document.querySelector('#chars');
+    character.innerHTML = '';
+    
     ReactDOM.render(
         <CharForm csrf={csrf} />, document.querySelector("#makeChar")
     );
     
     ReactDOM.render(
-        <CharList chars={[]} />, document.querySelector("#chars")
+        <h2>Characters Made </h2>, document.querySelector("#chars")
     );
     
     loadCharsFromServer();
+    
+     ReactDOM.render(
+        <CharList chars={[]} />, document.querySelector("#chars")
+    );
+    
+    gameButton.addEventListener("click", (e) =>{
+        e.preventDefault();
+        createGameWindow(csrf);
+        currPage = 'game';
+        console.log(currPage);
+        return false;
+    });
+    
+}
+
+const createGameWindow = (csrf) =>{
+    
+    const creatorButton = document.querySelector("#creatorButton");
+    
+    const form = document.querySelector('#makeChar');
+    form.innerHTML = '';
+    
+     ReactDOM.render(
+        <CharForm csrf={csrf} />, document.querySelector("#makeChar")
+    );
+    
+    
+    ReactDOM.render(
+        <CharList chars={[]} />, document.querySelector("#chars")
+    );
+    
+//   ReactDOM.render( 
+//       GameForm({csrf}), document.querySelector('#makeChar')
+//   );
+    
+    loadCharsFromServer();
+    
+     creatorButton.addEventListener("click", (e) =>{
+        e.preventDefault();
+        createCharCreatorWindow(csrf);
+        currPage = 'create';
+        console.log(currPage);
+        return false;
+    });
+}
+
+
+const setup = function(csrf){
+    
+    createCharCreatorWindow(csrf);
 };
 
 const getToken = () => {
