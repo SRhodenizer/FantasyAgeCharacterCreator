@@ -20,6 +20,7 @@ const rollDice = (mod) =>{
 
     let dice = document.querySelectorAll(".diceImage");
     
+    //makes a dice rolling animation
     for(let i = 0; i < dice.length;i++){
         dice[i].style="visibility:visible";
     }

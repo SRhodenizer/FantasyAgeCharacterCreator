@@ -121,7 +121,7 @@ const getToken = (request, response) => {
   res.json(csrfJSON);
 };
 
-//changes an account password 
+// changes an account password
 const changePassword = (request, response) => {
   const req = request;
   const res = response;
@@ -143,8 +143,8 @@ const changePassword = (request, response) => {
       error: "Cannot change another user's password.",
     });
   }
-  
-  //encrypts the new password 
+
+  // encrypts the new password
   Account.AccountModel.generateHash(req.body.pass, (salt, hash) => {
     const accountData = {
       username: req.body.username,
@@ -156,7 +156,7 @@ const changePassword = (request, response) => {
     const search = {
       username: req.body.username,
     };
-    //replaces the old password with the new one
+    // replaces the old password with the new one
     Account.AccountModel.collection.replaceOne(search, accountData);
   });
   return res.status(200).json({
@@ -164,39 +164,38 @@ const changePassword = (request, response) => {
   });
 };
 
-//sets an account to premium
-const goPremium = (req, res) =>{
-    const search = {
-        _id: req.session.account._id,
-    }
-    
-    Account.AccountModel.updateOne(search,{$set:{premium: true}}).then(function(data){
-     
-      Account.AccountModel.find(search).then(function(data2){
-          console.log(data2);
-          return res.status(200).json({message: "Set account to premium."});
-      }); 
+// sets an account to premium
+const goPremium = (req, res) => {
+  const search = {
+    _id: req.session.account._id,
+  };
+
+  Account.AccountModel.updateOne(search, { $set: { premium: true } }).then(() => {
+    Account.AccountModel.find(search).then((data2) => {
+      console.log(data2);
+      return res.status(200).json({ message: 'Set account to premium.' });
     });
+  });
 };
 
-//checks if the session user is premium
-const checkPremium = (req, res)=>{
-     const search = {
-        _id: req.session.account._id,
-    }
-    Account.AccountModel.find(search).then(function(data){
-        console.log(data.premium);
-        return res.status(200).json({user:data});
-    });
-}
+// checks if the session user is premium
+const checkPremium = (req, res) => {
+  const search = {
+    _id: req.session.account._id,
+  };
+  Account.AccountModel.find(search).then((data) => {
+    console.log(data.premium);
+    return res.status(200).json({ user: data });
+  });
+};
 
 
-//redirects to the not found page
+// redirects to the not found page
 const getNotFound = (req, res) => {
   res.redirect('/getNotFoundPage');
 };
 
-//loads the not found page  
+// loads the not found page
 const getNotFoundPage = (req, res) => {
   res.render('notFound', {
     csrfToken: req.csrfToken(),

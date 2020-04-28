@@ -22,7 +22,7 @@ var rollDice = function rollDice(mod) {
     roll: die1 + die2 + die3,
     stunt: stuntPoints
   };
-  var dice = document.querySelectorAll(".diceImage");
+  var dice = document.querySelectorAll(".diceImage"); //makes a dice rolling animation
 
   for (var i = 0; i < dice.length; i++) {
     dice[i].style = "visibility:visible";
