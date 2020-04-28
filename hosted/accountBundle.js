@@ -6,7 +6,7 @@ var premium; //wether or not the account is premium
 var handleChangePassword = function handleChangePassword(e) {
   e.preventDefault();
 
-  if ($("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == '') {
+  if ($("#pass").val() == '' || $("#pass2").val() == '') {
     handleError("All fields required");
     return false;
   }
@@ -16,7 +16,9 @@ var handleChangePassword = function handleChangePassword(e) {
     return false;
   }
 
-  sendAjax('POST', $("#changePassword").attr("action"), $("#changePassword").serialize(), redirect);
+  sendAjax('POST', $("#changePassword").attr("action"), $("#changePassword").serialize(), function () {
+    document.querySelector('#passwordChangeLabel').style = 'visibility:visible';
+  });
   return false;
 }; //sends the goPremium request 
 
@@ -36,15 +38,9 @@ var AccountSettingsWindow = function AccountSettingsWindow(props) {
       action: "/changePassword",
       method: "POST",
       className: "mainForm"
-    }, /*#__PURE__*/React.createElement("h3", null, "Change Password"), /*#__PURE__*/React.createElement("label", {
-      id: "formLabel",
-      htmlFor: "username"
-    }, "Username: "), /*#__PURE__*/React.createElement("input", {
-      id: "user",
-      type: "text",
-      name: "username",
-      placeholder: "username"
-    }), /*#__PURE__*/React.createElement("label", {
+    }, /*#__PURE__*/React.createElement("h3", null, "Change Password"), /*#__PURE__*/React.createElement("h3", {
+      id: "passwordChangeLabel"
+    }, "Password Changed!"), /*#__PURE__*/React.createElement("label", {
       id: "formLabel",
       htmlFor: "pass"
     }, "New Password: "), /*#__PURE__*/React.createElement("input", {

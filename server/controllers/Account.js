@@ -4,29 +4,34 @@ const {
   Account,
 } = models;
 
+//renders login page 
 const loginPage = (req, res) => {
   res.render('login', {
     csrfToken: req.csrfToken(),
   });
 };
 
+//renders sign up page
 const signupPage = (req, res) => {
   res.render('signup', {
     csrfToken: req.csrfToken(),
   });
 };
 
+//renders account settings page 
 const accountPage = (req, res) => {
   res.render('account', {
     csrfToken: req.csrfToken(),
   });
 };
 
+//logs out user 
 const logout = (req, res) => {
   req.session.destroy();
   res.redirect('/');
 };
 
+//validates login
 const login = (request, response) => {
   const req = request;
   const res = response;
@@ -56,6 +61,7 @@ const login = (request, response) => {
   });
 };
 
+//adds a new user account and auto logs them in 
 const signup = (request, response) => {
   const req = request;
   const res = response;
@@ -126,7 +132,9 @@ const changePassword = (request, response) => {
   const req = request;
   const res = response;
 
-  if (!req.body.username || !req.body.pass || !req.body.pass2) {
+    console.log(req.body);
+    
+  if (!req.body.pass || !req.body.pass2) {
     return res.status(400).json({
       error: 'All fields are required.',
     });
@@ -138,23 +146,17 @@ const changePassword = (request, response) => {
     });
   }
 
-  if (req.body.username !== req.session.account.username) {
-    return res.status(400).json({
-      error: "Cannot change another user's password.",
-    });
-  }
-
   // encrypts the new password
   Account.AccountModel.generateHash(req.body.pass, (salt, hash) => {
     const accountData = {
-      username: req.body.username,
+      username: req.session.account.username,
       salt,
       password: hash,
     };
 
     // get the username for searching
     const search = {
-      username: req.body.username,
+      username: req.session.account.username,
     };
     // replaces the old password with the new one
     Account.AccountModel.collection.replaceOne(search, accountData);

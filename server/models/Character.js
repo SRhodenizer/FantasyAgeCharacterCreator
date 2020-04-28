@@ -148,6 +148,7 @@ CharSchema.statics.findByOwner = (ownerID, callback) => {
   return CharModel.find(search).lean().exec(callback);
 };
 
+//deletes one character based on search query
 CharSchema.statics.remove = (ownerID, query) => {
   const search = {
     owner: convertID(ownerID),
@@ -157,6 +158,7 @@ CharSchema.statics.remove = (ownerID, query) => {
   return CharModel.collection.deleteOne(search);
 };
 
+//levels up the character queried 
 CharSchema.statics.levelUp = (ownerID, query) => {
   // converts parameters into mongoDB search query
   const search = {

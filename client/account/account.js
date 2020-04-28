@@ -4,7 +4,7 @@ let premium;//wether or not the account is premium
 const handleChangePassword = (e) => {
     e.preventDefault();
 
-    if ($("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == '') {
+    if ($("#pass").val() == '' || $("#pass2").val() == '') {
         handleError("All fields required");
         return false;
     }
@@ -14,7 +14,9 @@ const handleChangePassword = (e) => {
         return false;
     }
 
-    sendAjax('POST', $("#changePassword").attr("action"), $("#changePassword").serialize(), redirect);
+    sendAjax('POST', $("#changePassword").attr("action"), $("#changePassword").serialize(), function(){
+        document.querySelector('#passwordChangeLabel').style='visibility:visible';
+    });
 
     return false;
 };
@@ -39,8 +41,7 @@ const AccountSettingsWindow = (props) =>{
             className = "mainForm" 
         >
         <h3>Change Password</h3>
-        <label id="formLabel" htmlFor="username">Username: </label>
-        <input id="user" type="text" name="username" placeholder="username"/>
+        <h3 id="passwordChangeLabel">Password Changed!</h3>
         <label id="formLabel" htmlFor="pass">New Password: </label>
         <input id="pass" type="password" name="pass" placeholder="new password"/>
         <label id="formLabel" htmlFor="pass2">Retype New Password: </label>

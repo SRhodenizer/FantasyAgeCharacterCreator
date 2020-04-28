@@ -218,14 +218,16 @@ const CharForm = (props) => {
 
 //displays character information 
 const CharList = function(props){
-    
+    //if there are no characters 
      if(props.chars.length === 0){
+         //and you're on the create page 
          if(currPage === 'create'){
             return(
                 <div className="charList">
                 <h3 className="empty">No Characters Yet</h3>
                 </div>
             );
+             //or youre on the game page 
          }else{
             return(
                 <div className="charList">
@@ -236,9 +238,11 @@ const CharList = function(props){
        
     }
     
+    //node for each character
     let charNodes;
     
     if(currPage === 'game'){
+        //if it's the game page display all the stats and stuff
     charNodes = props.chars.map(function(char){
         //changes the logo based on character class 
         let image;
@@ -263,6 +267,7 @@ const CharList = function(props){
             <li key={item}>{item}</li> 
         );
         
+        //maps each of the character's stat attributes into unordered lists 
          let acc = char.accuracy.focus.map((item, key)=>
             <li key={item}>{item}</li>                        
         );
@@ -303,6 +308,7 @@ const CharList = function(props){
             <li key={item}>{item.name} ({item.level})</li>
         );
         
+        //returns react html for all the stats
         return(
             <div key={char._id} className="char">
                 <img src={image} alt="class logo" className="classLogo" />
@@ -362,12 +368,14 @@ const CharList = function(props){
             
         );
     });
+        //if it's the creator screen simply make a list of all made characters 
     }else{
         charNodes =  props.chars.map(function(char){
             return <p>{char.name}, the Level {char.level} {char.race} {char.class}.</p>
         });
     }
     
+    //then return the div of char nodes to render 
     return (
         <div className="charList">  
             {charNodes}
@@ -399,28 +407,33 @@ const getActiveChar = (e) =>{
 
 //makes the character creation screen 
 const createCharCreatorWindow = (csrf, premium) =>{
-    
+    //sets current page to the creator
     currPage = 'create';
     
+    //hides the dice roll panel
+    document.querySelector('#output').style='visibility:hidden';
+    
+    //gets the game nav button
     const gameButton = document.querySelector("#gameButton"); 
     
+    //gets rid of old chars data
     const character = document.querySelector('#chars');
     character.innerHTML = '';
     
+    //loads the charform
     ReactDOM.render(
         <CharForm csrf={csrf}  premium={premium} />, document.querySelector("#makeChar")
     );
-    
-    ReactDOM.render(
-        <h2>Characters Made </h2>, document.querySelector("#chars")
-    );
-    
+
+    //gets the chars
     loadCharsFromServer();
     
+    //loads the chars recieved
      ReactDOM.render(
         <CharList chars={[]} />, document.querySelector("#chars")
     );
     
+    //sets up the event listener for the game button
     gameButton.addEventListener("click", (e) =>{
         e.preventDefault();
         createGameWindow(csrf);
@@ -433,26 +446,30 @@ const createCharCreatorWindow = (csrf, premium) =>{
 //makes the gameplay screen
 const createGameWindow = (csrf) =>{
     
+    //sets the current page to the game screen
     currPage = 'game';
     
+    //shows the dice out put div
     document.querySelector('#output').style='visibility:visible';
     
+    //gets the nav button
     const creatorButton = document.querySelector("#creatorButton");
     
+    //hides old chars 
     const form = document.querySelector('#makeChar');
     form.innerHTML = '';
     
+    //renders the char form 
      ReactDOM.render(
         <CharForm csrf={csrf}/>, document.querySelector("#makeChar")
     );
     
-    
+    //renders the chars 
     ReactDOM.render(
         <CharList chars={[]} />, document.querySelector("#chars")
     );
     
-    //loadCharsFromServer();
-    
+    //sets up nav event listener 
      creatorButton.addEventListener("click", (e) =>{
         e.preventDefault();
         checkPremium(csrf);

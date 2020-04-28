@@ -305,14 +305,16 @@ var CharForm = function CharForm(props) {
 
 
 var CharList = function CharList(props) {
+  //if there are no characters 
   if (props.chars.length === 0) {
+    //and you're on the create page 
     if (currPage === 'create') {
       return (/*#__PURE__*/React.createElement("div", {
           className: "charList"
         }, /*#__PURE__*/React.createElement("h3", {
           className: "empty"
         }, "No Characters Yet"))
-      );
+      ); //or youre on the game page 
     } else {
       return (/*#__PURE__*/React.createElement("div", {
           className: "charList"
@@ -321,11 +323,13 @@ var CharList = function CharList(props) {
         }, "Select Character to Display"))
       );
     }
-  }
+  } //node for each character
+
 
   var charNodes;
 
   if (currPage === 'game') {
+    //if it's the game page display all the stats and stuff
     charNodes = props.chars.map(function (_char) {
       //changes the logo based on character class 
       var image;
@@ -355,7 +359,8 @@ var CharList = function CharList(props) {
             key: item
           }, item)
         );
-      });
+      }); //maps each of the character's stat attributes into unordered lists 
+
 
       var acc = _char.accuracy.focus.map(function (item, key) {
         return (/*#__PURE__*/React.createElement("li", {
@@ -425,7 +430,8 @@ var CharList = function CharList(props) {
             key: item
           }, item.name, " (", item.level, ")")
         );
-      });
+      }); //returns react html for all the stats
+
 
       return (/*#__PURE__*/React.createElement("div", {
           key: _char._id,
@@ -483,13 +489,14 @@ var CharList = function CharList(props) {
           className: "money"
         }, "Current Money(SP): ", _char.money), /*#__PURE__*/React.createElement("ul", null, inv)))
       );
-    });
+    }); //if it's the creator screen simply make a list of all made characters 
   } else {
     charNodes = props.chars.map(function (_char2) {
       return (/*#__PURE__*/React.createElement("p", null, _char2.name, ", the Level ", _char2.level, " ", _char2.race, " ", _char2["class"], ".")
       );
     });
-  }
+  } //then return the div of char nodes to render 
+
 
   return (/*#__PURE__*/React.createElement("div", {
       className: "charList"
@@ -520,19 +527,27 @@ var getActiveChar = function getActiveChar(e) {
 
 
 var createCharCreatorWindow = function createCharCreatorWindow(csrf, premium) {
-  currPage = 'create';
-  var gameButton = document.querySelector("#gameButton");
+  //sets current page to the creator
+  currPage = 'create'; //hides the dice roll panel
+
+  document.querySelector('#output').style = 'visibility:hidden'; //gets the game nav button
+
+  var gameButton = document.querySelector("#gameButton"); //gets rid of old chars data
+
   var character = document.querySelector('#chars');
-  character.innerHTML = '';
+  character.innerHTML = ''; //loads the charform
+
   ReactDOM.render( /*#__PURE__*/React.createElement(CharForm, {
     csrf: csrf,
     premium: premium
-  }), document.querySelector("#makeChar"));
-  ReactDOM.render( /*#__PURE__*/React.createElement("h2", null, "Characters Made "), document.querySelector("#chars"));
-  loadCharsFromServer();
+  }), document.querySelector("#makeChar")); //gets the chars
+
+  loadCharsFromServer(); //loads the chars recieved
+
   ReactDOM.render( /*#__PURE__*/React.createElement(CharList, {
     chars: []
-  }), document.querySelector("#chars"));
+  }), document.querySelector("#chars")); //sets up the event listener for the game button
+
   gameButton.addEventListener("click", function (e) {
     e.preventDefault();
     createGameWindow(csrf);
@@ -542,17 +557,23 @@ var createCharCreatorWindow = function createCharCreatorWindow(csrf, premium) {
 
 
 var createGameWindow = function createGameWindow(csrf) {
-  currPage = 'game';
-  document.querySelector('#output').style = 'visibility:visible';
-  var creatorButton = document.querySelector("#creatorButton");
+  //sets the current page to the game screen
+  currPage = 'game'; //shows the dice out put div
+
+  document.querySelector('#output').style = 'visibility:visible'; //gets the nav button
+
+  var creatorButton = document.querySelector("#creatorButton"); //hides old chars 
+
   var form = document.querySelector('#makeChar');
-  form.innerHTML = '';
+  form.innerHTML = ''; //renders the char form 
+
   ReactDOM.render( /*#__PURE__*/React.createElement(CharForm, {
     csrf: csrf
-  }), document.querySelector("#makeChar"));
+  }), document.querySelector("#makeChar")); //renders the chars 
+
   ReactDOM.render( /*#__PURE__*/React.createElement(CharList, {
     chars: []
-  }), document.querySelector("#chars")); //loadCharsFromServer();
+  }), document.querySelector("#chars")); //sets up nav event listener 
 
   creatorButton.addEventListener("click", function (e) {
     e.preventDefault();

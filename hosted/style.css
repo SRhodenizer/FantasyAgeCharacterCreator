@@ -562,3 +562,7 @@ h3.speed {
     width:50%;
     height: auto;
 }
+
+#passwordChangeLabel{
+    visibility:hidden;
+}

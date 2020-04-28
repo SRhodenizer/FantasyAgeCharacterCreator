@@ -5,10 +5,12 @@ function rollDie() {
   return (Math.floor(Math.random() * 6) + 1);
 }
 
+//sets up the char model
 const {
   Char,
 } = models;
 
+//loads the maker page 
 const makerPage = (req, res) => {
   Char.CharModel.findByOwner(req.session.account._id, (err, docs) => {
     if (err) {
@@ -25,23 +27,7 @@ const makerPage = (req, res) => {
   });
 };
 
-const gamePage = (req, res) => {
-  Char.CharModel.findByOwner(req.session.account._id, (err, docs) => {
-    if (err) {
-      console.log(err);
-      return res.status(400).json({
-        error: 'An error occured',
-      });
-    }
-
-    return res.render('app', {
-      csrfToken: req.csrfToken(),
-      chars: docs,
-    });
-  });
-};
-
-
+//makes a character and adds it to mongo
 const makeChar = (req, res) => {
   if (!req.body.name || !req.body.age || !req.body.level || !req.body.class || !req.body.race) {
     return res.status(400).json({
@@ -614,6 +600,7 @@ const makeChar = (req, res) => {
     characterData.magicPoints = mp;
   }
 
+  //sets up the new character 
   const newChar = new Char.CharModel(characterData);
 
   const charPromise = newChar.save();
@@ -636,6 +623,7 @@ const makeChar = (req, res) => {
   return charPromise;
 };
 
+//gets a singular character based on its name 
 const getCharacter = (request, response) => {
   const req = request;
   const res = response;
@@ -648,6 +636,7 @@ const getCharacter = (request, response) => {
   Char.CharModel.find(search).then((result) => res.json(result));
 };
 
+//gets all characters for one _id
 const getCharacters = (request, response) => {
   const req = request;
   const res = response;
@@ -666,19 +655,19 @@ const getCharacters = (request, response) => {
   });
 };
 
+// sends a remove message to the character model script
 const removeChar = (request, response) => {
   Char.CharModel.remove(request.session.account._id, request.body.query);
   return response;
 };
 
-// sends a level
+// sends a level up message to the character model script
 const levelUp = (request, response) => {
   Char.CharModel.levelUp(request.session.account._id, request.body.query);
   return response;
 };
 
 module.exports.makerPage = makerPage;
-module.exports.gamePage = gamePage;
 module.exports.getCharacters = getCharacters;
 module.exports.getCharacter = getCharacter;
 module.exports.make = makeChar;
