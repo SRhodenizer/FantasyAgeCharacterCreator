@@ -1,7 +1,42 @@
 "use strict";
 
-var currPage = '';
-var currChar; //the current character being played 
+var currPage = ''; //wether the page displayed is the char creator or the game page 
+
+var currChar; //the current character being played  
+
+var diceRolls; //output for rolling dice
+//function for dice rolls in game, 3d6
+
+var rollDice = function rollDice(mod) {
+  var stuntPoints = 0;
+  var die1 = Math.floor(Math.random() * 6) + 1;
+  var die2 = Math.floor(Math.random() * 6) + 1;
+  var die3 = Math.floor(Math.random() * 6) + 1;
+
+  if (die1 === die2) {
+    stuntPoints = die3;
+  } //makes a json object with toal rolled and stunt points achieved
+
+
+  var total = {
+    roll: die1 + die2 + die3,
+    stunt: stuntPoints
+  };
+  var dice = document.querySelectorAll(".diceImage");
+
+  for (var i = 0; i < dice.length; i++) {
+    dice[i].style = "visibility:visible";
+  }
+
+  setTimeout(function () {
+    for (var _i = 0; _i < dice.length; _i++) {
+      dice[_i].style = "visibility:hidden";
+    }
+
+    document.querySelector('#diceRolls').innerHTML = total.roll;
+  }, 1200);
+}; //for adding a character to the list
+
 
 var handleCharacter = function handleCharacter(e) {
   e.preventDefault();
@@ -20,7 +55,8 @@ var handleCharacter = function handleCharacter(e) {
     loadCharsFromServer();
   });
   return false;
-};
+}; //handles clicking the remove character button
+
 
 var handleClick = function handleClick(e) {
   e.preventDefault(); //send the ajax for the button's function
@@ -31,19 +67,35 @@ var handleClick = function handleClick(e) {
   });
   loadCharsFromServer();
   return false;
-};
+}; //checks if the current user is premium
+
+
+var checkPremium = function checkPremium(csrf) {
+  var data = sendAjax('GET', '/checkPremium', {}, function (data) {
+    var premium = data.user[0].premium;
+
+    if (premium === undefined) {
+      premium = false;
+    }
+
+    console.log(premium); //debug check
+
+    createCharCreatorWindow(csrf, premium);
+  });
+}; //levels up the character in play
+
 
 var levelUp = function levelUp(e) {
   e.preventDefault(); //send the ajax for the button's function
 
   sendAjax('POST', '/levelUp', {
     _csrf: document.querySelector('#csrf').value,
-    query: document.querySelector('#removeCharName').value
-  }, function () {
-    loadCharsFromServer();
+    query: document.querySelector("#characterName").value
   });
+  loadCharsFromServer();
   return false;
-};
+}; //forms for influencing the character during game and making character 
+
 
 var CharForm = function CharForm(props) {
   if (currPage === 'game') {
@@ -60,11 +112,18 @@ var CharForm = function CharForm(props) {
         value: "Level Up",
         onClick: levelUp
       }), /*#__PURE__*/React.createElement("input", {
+        className: "makeSubmit",
+        type: "button",
+        value: "Roll Dice",
+        onClick: rollDice
+      }), /*#__PURE__*/React.createElement("input", {
+        id: "activeName",
         className: "activeName",
         type: "text",
         name: "name",
         placeholder: "Name of Character"
       }), /*#__PURE__*/React.createElement("input", {
+        id: "activeNameButton",
         className: "makeSubmit",
         type: "submit",
         value: "Find Character"
@@ -76,91 +135,174 @@ var CharForm = function CharForm(props) {
       }))
     );
   } else {
-    return (/*#__PURE__*/React.createElement("form", {
-        id: "characterForm",
-        onSubmit: handleCharacter,
-        name: "charForm",
-        action: "/maker",
-        method: "POST",
-        className: "charForm"
-      }, /*#__PURE__*/React.createElement("label", {
-        htmlFor: "name"
-      }, "Name: "), /*#__PURE__*/React.createElement("input", {
-        id: "charName",
-        type: "text",
-        name: "name",
-        placeholder: "Character's Name"
-      }), /*#__PURE__*/React.createElement("label", {
-        htmlFor: "race"
-      }, "Race: "), /*#__PURE__*/React.createElement("select", {
-        id: "charRace",
-        name: "race"
-      }, /*#__PURE__*/React.createElement("option", {
-        value: "null"
-      }, "Select Race"), /*#__PURE__*/React.createElement("option", {
-        value: "Dwarf"
-      }, "Dwarf"), /*#__PURE__*/React.createElement("option", {
-        value: "Elf"
-      }, "Elf"), /*#__PURE__*/React.createElement("option", {
-        value: "Gnome"
-      }, "Gnome"), /*#__PURE__*/React.createElement("option", {
-        value: "Halfling"
-      }, "Halfling"), /*#__PURE__*/React.createElement("option", {
-        value: "Human"
-      }, "Human"), /*#__PURE__*/React.createElement("option", {
-        value: "Orc"
-      }, "Orc")), /*#__PURE__*/React.createElement("label", {
-        htmlFor: "class"
-      }, "Class: "), /*#__PURE__*/React.createElement("select", {
-        id: "charClass",
-        name: "class"
-      }, /*#__PURE__*/React.createElement("option", {
-        value: "null"
-      }, "Select Class"), /*#__PURE__*/React.createElement("option", {
-        value: "Mage"
-      }, "Mage"), /*#__PURE__*/React.createElement("option", {
-        value: "Warrior"
-      }, "Warrior"), /*#__PURE__*/React.createElement("option", {
-        value: "Rogue"
-      }, "Rogue")), /*#__PURE__*/React.createElement("label", {
-        htmlFor: "level"
-      }, "Lvl: "), /*#__PURE__*/React.createElement("input", {
-        id: "charLevel",
-        type: "number",
-        name: "level",
-        min: "1",
-        max: "20",
-        placeholder: "Lvl"
-      }), /*#__PURE__*/React.createElement("label", {
-        htmlFor: "age"
-      }, "Age: "), /*#__PURE__*/React.createElement("input", {
-        id: "charAge",
-        type: "text",
-        name: "age",
-        placeholder: "Age"
-      }), /*#__PURE__*/React.createElement("input", {
-        id: "csrf",
-        type: "hidden",
-        name: "_csrf",
-        value: props.csrf
-      }), /*#__PURE__*/React.createElement("input", {
-        className: "makeSubmit",
-        type: "submit",
-        value: "Make Character"
-      }), /*#__PURE__*/React.createElement("input", {
-        className: "removeSubmit",
-        type: "button",
-        value: "Delete Character",
-        onClick: handleClick
-      }), /*#__PURE__*/React.createElement("input", {
-        id: "removeCharName",
-        type: "text",
-        name: "removeName",
-        placeholder: "Delete Character"
-      }))
-    );
+    if (props.premium) {
+      return (/*#__PURE__*/React.createElement("form", {
+          id: "characterForm",
+          onSubmit: handleCharacter,
+          name: "charForm",
+          action: "/maker",
+          method: "POST",
+          className: "charForm"
+        }, /*#__PURE__*/React.createElement("label", {
+          htmlFor: "name"
+        }, "Name: "), /*#__PURE__*/React.createElement("input", {
+          id: "charName",
+          type: "text",
+          name: "name",
+          placeholder: "Character's Name"
+        }), /*#__PURE__*/React.createElement("label", {
+          htmlFor: "race"
+        }, "Race: "), /*#__PURE__*/React.createElement("select", {
+          id: "charRace",
+          name: "race"
+        }, /*#__PURE__*/React.createElement("option", {
+          value: "null"
+        }, "Select Race"), /*#__PURE__*/React.createElement("option", {
+          value: "Dwarf"
+        }, "Dwarf"), /*#__PURE__*/React.createElement("option", {
+          value: "Elf"
+        }, "Elf"), /*#__PURE__*/React.createElement("option", {
+          value: "Gnome"
+        }, "Gnome"), /*#__PURE__*/React.createElement("option", {
+          value: "Halfling"
+        }, "Halfling"), /*#__PURE__*/React.createElement("option", {
+          value: "Human"
+        }, "Human"), /*#__PURE__*/React.createElement("option", {
+          value: "Orc"
+        }, "Orc")), /*#__PURE__*/React.createElement("label", {
+          htmlFor: "class"
+        }, "Class: "), /*#__PURE__*/React.createElement("select", {
+          id: "charClass",
+          name: "class"
+        }, /*#__PURE__*/React.createElement("option", {
+          value: "null"
+        }, "Select Class"), /*#__PURE__*/React.createElement("option", {
+          value: "Mage"
+        }, "Mage"), /*#__PURE__*/React.createElement("option", {
+          value: "Warrior"
+        }, "Warrior"), /*#__PURE__*/React.createElement("option", {
+          value: "Rogue"
+        }, "Rogue")), /*#__PURE__*/React.createElement("label", {
+          htmlFor: "level"
+        }, "Lvl: "), /*#__PURE__*/React.createElement("input", {
+          id: "charLevel",
+          type: "number",
+          name: "level",
+          min: "1",
+          max: "20",
+          placeholder: "Lvl"
+        }), /*#__PURE__*/React.createElement("label", {
+          htmlFor: "age"
+        }, "Age: "), /*#__PURE__*/React.createElement("input", {
+          id: "charAge",
+          type: "text",
+          name: "age",
+          placeholder: "Age"
+        }), /*#__PURE__*/React.createElement("input", {
+          id: "csrf",
+          type: "hidden",
+          name: "_csrf",
+          value: props.csrf
+        }), /*#__PURE__*/React.createElement("input", {
+          className: "makeSubmit",
+          type: "submit",
+          value: "Make Character"
+        }), /*#__PURE__*/React.createElement("input", {
+          className: "removeSubmit",
+          type: "button",
+          value: "Delete Character",
+          onClick: handleClick
+        }), /*#__PURE__*/React.createElement("input", {
+          id: "removeCharName",
+          type: "text",
+          name: "removeName",
+          placeholder: "Delete Character"
+        }))
+      );
+    } else {
+      return (/*#__PURE__*/React.createElement("form", {
+          id: "characterForm",
+          onSubmit: handleCharacter,
+          name: "charForm",
+          action: "/maker",
+          method: "POST",
+          className: "charForm"
+        }, /*#__PURE__*/React.createElement("label", {
+          htmlFor: "name"
+        }, "Name: "), /*#__PURE__*/React.createElement("input", {
+          id: "charName",
+          type: "text",
+          name: "name",
+          placeholder: "Character's Name"
+        }), /*#__PURE__*/React.createElement("label", {
+          htmlFor: "race"
+        }, "Race: "), /*#__PURE__*/React.createElement("select", {
+          id: "charRace",
+          name: "race"
+        }, /*#__PURE__*/React.createElement("option", {
+          value: "null"
+        }, "Select Race"), /*#__PURE__*/React.createElement("option", {
+          value: "Dwarf"
+        }, "Dwarf"), /*#__PURE__*/React.createElement("option", {
+          value: "Elf"
+        }, "Elf"), /*#__PURE__*/React.createElement("option", {
+          value: "Human"
+        }, "Human"), /*#__PURE__*/React.createElement("option", {
+          value: "Orc"
+        }, "Orc")), /*#__PURE__*/React.createElement("label", {
+          htmlFor: "class"
+        }, "Class: "), /*#__PURE__*/React.createElement("select", {
+          id: "charClass",
+          name: "class"
+        }, /*#__PURE__*/React.createElement("option", {
+          value: "null"
+        }, "Select Class"), /*#__PURE__*/React.createElement("option", {
+          value: "Mage"
+        }, "Mage"), /*#__PURE__*/React.createElement("option", {
+          value: "Warrior"
+        }, "Warrior"), /*#__PURE__*/React.createElement("option", {
+          value: "Rogue"
+        }, "Rogue")), /*#__PURE__*/React.createElement("label", {
+          htmlFor: "level"
+        }, "Lvl: "), /*#__PURE__*/React.createElement("input", {
+          id: "charLevel",
+          type: "number",
+          name: "level",
+          min: "1",
+          max: "20",
+          placeholder: "Lvl"
+        }), /*#__PURE__*/React.createElement("label", {
+          htmlFor: "age"
+        }, "Age: "), /*#__PURE__*/React.createElement("input", {
+          id: "charAge",
+          type: "text",
+          name: "age",
+          placeholder: "Age"
+        }), /*#__PURE__*/React.createElement("input", {
+          id: "csrf",
+          type: "hidden",
+          name: "_csrf",
+          value: props.csrf
+        }), /*#__PURE__*/React.createElement("input", {
+          className: "makeSubmit",
+          type: "submit",
+          value: "Make Character"
+        }), /*#__PURE__*/React.createElement("input", {
+          className: "removeSubmit",
+          type: "button",
+          value: "Delete Character",
+          onClick: handleClick
+        }), /*#__PURE__*/React.createElement("input", {
+          id: "removeCharName",
+          type: "text",
+          name: "removeName",
+          placeholder: "Delete Character"
+        }))
+      );
+    }
   }
-};
+}; //displays character information 
+
 
 var CharList = function CharList(props) {
   if (props.chars.length === 0) {
@@ -195,7 +337,7 @@ var CharList = function CharList(props) {
           break;
 
         case 'Mage':
-          mp = 'Magic';
+          mp = 'Magic:';
           image = '/assets/img/wizard.png';
           break;
 
@@ -320,7 +462,12 @@ var CharList = function CharList(props) {
           className: "mp"
         }, mp, " ", _char.magicPoints), /*#__PURE__*/React.createElement("h3", {
           className: "name"
-        }, "Name: ", _char.name), /*#__PURE__*/React.createElement("h3", {
+        }, "Name: ", _char.name), /*#__PURE__*/React.createElement("input", {
+          id: "characterName",
+          type: "hidden",
+          name: "name",
+          value: _char.name
+        }), /*#__PURE__*/React.createElement("h3", {
           className: "class"
         }, "Level ", _char.level, " ", _char.race, " ", _char["class"]), /*#__PURE__*/React.createElement("h3", {
           className: "past"
@@ -348,7 +495,8 @@ var CharList = function CharList(props) {
       className: "charList"
     }, charNodes)
   );
-};
+}; //gets all characters from the server
+
 
 var loadCharsFromServer = function loadCharsFromServer() {
   sendAjax('GET', '/getChars', null, function (data) {
@@ -356,7 +504,8 @@ var loadCharsFromServer = function loadCharsFromServer() {
       chars: data.chars
     }), document.querySelector("#chars"));
   });
-};
+}; //gets a character based on an input string 
+
 
 var getActiveChar = function getActiveChar(e) {
   e.preventDefault();
@@ -364,17 +513,20 @@ var getActiveChar = function getActiveChar(e) {
     currChar = data;
     ReactDOM.render( /*#__PURE__*/React.createElement(CharList, {
       chars: data
-    }), document.querySelector("#chars"));
+    }), document.querySelector("#chars")); //document.querySelector('#activeName').remove();
+    //document.querySelector('#activeNameButton').remove();
   });
-};
+}; //makes the character creation screen 
 
-var createCharCreatorWindow = function createCharCreatorWindow(csrf) {
+
+var createCharCreatorWindow = function createCharCreatorWindow(csrf, premium) {
   currPage = 'create';
   var gameButton = document.querySelector("#gameButton");
   var character = document.querySelector('#chars');
   character.innerHTML = '';
   ReactDOM.render( /*#__PURE__*/React.createElement(CharForm, {
-    csrf: csrf
+    csrf: csrf,
+    premium: premium
   }), document.querySelector("#makeChar"));
   ReactDOM.render( /*#__PURE__*/React.createElement("h2", null, "Characters Made "), document.querySelector("#chars"));
   loadCharsFromServer();
@@ -386,10 +538,12 @@ var createCharCreatorWindow = function createCharCreatorWindow(csrf) {
     createGameWindow(csrf);
     return false;
   });
-};
+}; //makes the gameplay screen
+
 
 var createGameWindow = function createGameWindow(csrf) {
   currPage = 'game';
+  document.querySelector('#output').style = 'visibility:visible';
   var creatorButton = document.querySelector("#creatorButton");
   var form = document.querySelector('#makeChar');
   form.innerHTML = '';
@@ -402,14 +556,16 @@ var createGameWindow = function createGameWindow(csrf) {
 
   creatorButton.addEventListener("click", function (e) {
     e.preventDefault();
-    createCharCreatorWindow(csrf);
+    checkPremium(csrf);
     return false;
   });
-};
+}; //setup function for page redirects 
+
 
 var setup = function setup(csrf) {
-  createCharCreatorWindow(csrf);
-};
+  checkPremium(csrf);
+}; //gets csrfTokens on launch
+
 
 var getToken = function getToken() {
   sendAjax('GET', '/getToken', null, function (result) {

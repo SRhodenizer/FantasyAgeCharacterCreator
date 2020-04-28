@@ -55,8 +55,7 @@ nav:nth-child(1) {
 }
 
 .navlink a:hover {
-    transition: background-color 0.8s ease;
-    background-color: #66bdff;
+    color: darkgoldenrod;
 }
 
 .charForm {
@@ -216,6 +215,26 @@ nav:nth-child(1) {
     text-shadow: 3px 3px black;
 }
 
+.mainForm input[type=submit]:hover{
+    color: darkgoldenrod;
+}
+
+.mainForm input[type=button]{
+    font-family: permanent marker;
+    width: auto;
+    background-image:url(img/3-dice.png);
+    background-size:cover;
+    color: goldenrod;
+    text-shadow: 3px 3px black;
+    font-size: 1em;
+    border-radius: 10px;
+    margin-top: 5px;
+}
+
+.mainForm input[type=button]:hover{
+    color: darkgoldenrod;
+}
+
 .mainForm h3 {
     text-align: center;
 }
@@ -236,9 +255,7 @@ nav:nth-child(1) {
     margin-top: 14px;
     font-size: 1.2em;
     width: 100px;
-    background-color: #55acee;
-    border-radius: 2px;
-    border-color: #66acee;
+    border-radius: 10px;
     padding: 3px 0px;
     color: white;
     text-decoration: none;
@@ -249,8 +266,7 @@ nav:nth-child(1) {
 }
 
 .formSubmit:hover {
-    transition: background-color 0.4s ease;
-    background-color: #338acc;
+    color: darkgoldenrod;
 }
 
 #user, #pass, #pass2 {
@@ -298,10 +314,36 @@ nav:nth-child(1) {
     padding-left: 100px;
 }
 
+#output{
+    width:15%;
+    height: 81%;
+    position: relative;
+    left: 77%;
+    top: -110%;
+    background-image: url(img/paper.jpg);
+    background-size:cover;
+    border: 2px solid black;
+    border-radius: 4px;
+    text-align: center;
+    font-family: permanent marker;
+    visibility: hidden;
+    padding-top: -10px;
+}
+
+#output h2{
+    text-decoration: underline;
+}
+
+#output h1{
+    position:static;
+    font-size:4em;
+    text-decoration: none;
+}
+
 #chars {
     width: 40%;
     min-width: 400px;
-    border: 2px solid #55acee;
+    border: 2px solid black;
     border-radius: 4px;
     margin: 0 auto;
 }
@@ -330,12 +372,6 @@ nav:nth-child(1) {
     overflow: hidden;
     font-family: 'Permanent Marker';
     top: -55px;
-}
-
-{
-    transition: border-color 0.2s ease-out;
-    transition: background-color 2.6s ease-out;
-    background-color: #66bfff;
 }
 
 img.classLogo {
@@ -519,4 +555,10 @@ h3.speed {
     margin-left: 25%;
     margin-top: 1%;
     padding-top: 10%;
+}
+
+.diceImage{
+    visibility: hidden;
+    width:50%;
+    height: auto;
 }

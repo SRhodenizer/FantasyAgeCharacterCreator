@@ -1,6 +1,42 @@
-let currPage = '';
-let currChar; //the current character being played 
+let currPage = ''; //wether the page displayed is the char creator or the game page 
+let currChar; //the current character being played  
+let diceRolls;//output for rolling dice
 
+//function for dice rolls in game, 3d6
+const rollDice = (mod) =>{
+    
+  let stuntPoints = 0;
+    
+  let die1 = (Math.floor(Math.random() * 6)+1);
+  let die2 = (Math.floor(Math.random() * 6)+1);
+  let die3 = (Math.floor(Math.random() * 6)+1);
+    
+  if(die1 === die2){
+      stuntPoints = die3;
+  }
+
+    //makes a json object with toal rolled and stunt points achieved
+  let total = {roll:die1+die2+die3,stunt:stuntPoints};
+
+    let dice = document.querySelectorAll(".diceImage");
+    
+    for(let i = 0; i < dice.length;i++){
+        dice[i].style="visibility:visible";
+    }
+
+    setTimeout(()=>{
+        
+        for(let i = 0; i < dice.length;i++){
+             dice[i].style="visibility:hidden";
+        }
+        document.querySelector('#diceRolls').innerHTML = total.roll;
+        
+    },1200);
+    
+};
+
+
+//for adding a character to the list
 const handleCharacter = (e) => {
     e.preventDefault();
     
@@ -21,6 +57,7 @@ const handleCharacter = (e) => {
     return false;
 };
 
+//handles clicking the remove character button
 const handleClick = (e) =>{
     e.preventDefault();
     
@@ -32,20 +69,31 @@ const handleClick = (e) =>{
     return false;
 };
 
+//checks if the current user is premium
+const checkPremium = (csrf) =>{
+    let data = sendAjax('GET','/checkPremium',{},function(data){ 
+         let premium = data.user[0].premium;
+         if(premium === undefined){
+             premium = false;
+         }
+         console.log(premium); //debug check
+        
+        createCharCreatorWindow(csrf, premium);
+    }); 
+};
+
+//levels up the character in play
 const levelUp = (e) =>{
     e.preventDefault();
-    
     //send the ajax for the button's function
-    sendAjax('POST','/levelUp', {_csrf: document.querySelector('#csrf').value,query:document.querySelector('#removeCharName').value},function(){  
+    sendAjax('POST','/levelUp', {_csrf: document.querySelector('#csrf').value,query:document.querySelector("#characterName").value})  
        
-        loadCharsFromServer();
-    
-    });
-    
+    loadCharsFromServer();
     
     return false;
 };
 
+//forms for influencing the character during game and making character 
 const CharForm = (props) => {
    
     if(currPage === 'game'){
@@ -60,8 +108,9 @@ const CharForm = (props) => {
             className="charForm"
          >
          <input className="makeSubmit" type="button" value="Level Up" onClick={levelUp}/>
-         <input className="activeName" type="text" name="name" placeholder="Name of Character"/>
-         <input className="makeSubmit" type="submit" value="Find Character" />
+         <input className="makeSubmit" type="button" value="Roll Dice" onClick={rollDice}/>
+         <input id="activeName" className="activeName" type="text" name="name" placeholder="Name of Character"/>
+         <input id="activeNameButton" className="makeSubmit" type="submit" value="Find Character" />
          
          
          <input id="csrf" type="hidden" name="_csrf" value={props.csrf} />
@@ -69,8 +118,9 @@ const CharForm = (props) => {
         );
  
     }else{
-               
-        return(
+            
+        if(props.premium){
+            return(
         <form id="characterForm"
             onSubmit={handleCharacter}
             name="charForm"
@@ -102,7 +152,7 @@ const CharForm = (props) => {
         </select>
         
         <label htmlFor="level">Lvl: </label>
-       <input id="charLevel" type="number" name="level" min="1" max="20" placeholder="Lvl"/>
+        <input id="charLevel" type="number" name="level" min="1" max="20" placeholder="Lvl"/>
          
         <label htmlFor="age">Age: </label>
         <input id="charAge" type="text" name="age" placeholder="Age"/>
@@ -114,12 +164,58 @@ const CharForm = (props) => {
         <input id="removeCharName" type="text" name="removeName" placeholder="Delete Character"/>
         </form>
     ); 
+        }else{
+            return(
+        <form id="characterForm"
+            onSubmit={handleCharacter}
+            name="charForm"
+            action="/maker"
+            method="POST"
+            className="charForm"
+        >
+         
+        <label htmlFor="name">Name: </label>
+        <input id="charName" type="text" name="name" placeholder="Character's Name"/>
+         
+        <label htmlFor="race">Race: </label>
+        <select id="charRace" name="race">
+            <option value="null">Select Race</option>
+            <option value="Dwarf">Dwarf</option>
+            <option value="Elf">Elf</option>
+            <option value="Human">Human</option>
+            <option value="Orc">Orc</option>
+        </select>
+         
+        <label htmlFor="class">Class: </label>
+        <select id="charClass" name="class">
+            <option value="null">Select Class</option>
+            <option value="Mage">Mage</option>
+            <option value="Warrior">Warrior</option>
+            <option value="Rogue">Rogue</option>
+        </select>
+        
+        <label htmlFor="level">Lvl: </label>
+        <input id="charLevel" type="number" name="level" min="1" max="20" placeholder="Lvl"/>
+         
+        <label htmlFor="age">Age: </label>
+        <input id="charAge" type="text" name="age" placeholder="Age"/>
+         
+        <input id="csrf" type="hidden" name="_csrf" value={props.csrf} />
+        
+        <input className="makeSubmit" type="submit" value="Make Character" />
+        <input className="removeSubmit" type="button" value="Delete Character" onClick={handleClick}/>
+        <input id="removeCharName" type="text" name="removeName" placeholder="Delete Character"/>
+        </form>
+    ); 
+        }
+        
+        
     }
     
      
 };
 
-
+//displays character information 
 const CharList = function(props){
     
      if(props.chars.length === 0){
@@ -151,7 +247,7 @@ const CharList = function(props){
                 image = '/assets/img/warrior.png';
                 break;
             case 'Mage':
-                mp = 'Magic';
+                mp = 'Magic:';
                 image = '/assets/img/wizard.png';
                 break;
             case 'Rogue':
@@ -244,6 +340,7 @@ const CharList = function(props){
                     <h3 className="hp">Health: {char.health}</h3>
                     <h3 className="mp">{mp} {char.magicPoints}</h3>
                     <h3 className="name">Name: {char.name}</h3>
+                    <input id="characterName" type="hidden" name="name" value={char.name} />
                     <h3 className="class">Level {char.level} {char.race} {char.class}</h3>
                     <h3 className="past">Background: {char.background}</h3>
                     <h3 className="def">Defence: {char.defence}</h3>
@@ -277,6 +374,7 @@ const CharList = function(props){
     );
 };
 
+//gets all characters from the server
 const loadCharsFromServer = () => {
     sendAjax('GET','/getChars',null, (data)=>{
        ReactDOM.render(
@@ -285,6 +383,7 @@ const loadCharsFromServer = () => {
     });  
 };
 
+//gets a character based on an input string 
 const getActiveChar = (e) =>{
   e.preventDefault();
   sendAjax('POST','/getChar',$("#gameForm").serialize(),function (data){
@@ -292,10 +391,13 @@ const getActiveChar = (e) =>{
        ReactDOM.render(
             <CharList chars={data}/>, document.querySelector("#chars")
        );
+      //document.querySelector('#activeName').remove();
+      //document.querySelector('#activeNameButton').remove();
   });  
 };
 
-const createCharCreatorWindow = (csrf) =>{
+//makes the character creation screen 
+const createCharCreatorWindow = (csrf, premium) =>{
     
     currPage = 'create';
     
@@ -305,7 +407,7 @@ const createCharCreatorWindow = (csrf) =>{
     character.innerHTML = '';
     
     ReactDOM.render(
-        <CharForm csrf={csrf} />, document.querySelector("#makeChar")
+        <CharForm csrf={csrf}  premium={premium} />, document.querySelector("#makeChar")
     );
     
     ReactDOM.render(
@@ -327,9 +429,12 @@ const createCharCreatorWindow = (csrf) =>{
     
 }
 
+//makes the gameplay screen
 const createGameWindow = (csrf) =>{
     
     currPage = 'game';
+    
+    document.querySelector('#output').style='visibility:visible';
     
     const creatorButton = document.querySelector("#creatorButton");
     
@@ -337,7 +442,7 @@ const createGameWindow = (csrf) =>{
     form.innerHTML = '';
     
      ReactDOM.render(
-        <CharForm csrf={csrf} />, document.querySelector("#makeChar")
+        <CharForm csrf={csrf}/>, document.querySelector("#makeChar")
     );
     
     
@@ -349,17 +454,18 @@ const createGameWindow = (csrf) =>{
     
      creatorButton.addEventListener("click", (e) =>{
         e.preventDefault();
-        createCharCreatorWindow(csrf);
+        checkPremium(csrf);
         return false;
     });
 }
 
 
-const setup = function(csrf){
-    
-    createCharCreatorWindow(csrf);
+//setup function for page redirects 
+const setup = function(csrf){  
+    checkPremium(csrf);
 };
 
+//gets csrfTokens on launch
 const getToken = () => {
   sendAjax('GET', '/getToken', null, (result) =>{
      setup(result.csrfToken); 

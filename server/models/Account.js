@@ -24,6 +24,10 @@ const AccountSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  premium: {
+    type: Boolean,
+    required: false,
+  },
   createdDate: {
     type: Date,
     default: Date.now,
@@ -81,6 +85,7 @@ AccountSchema.statics.authenticate = (username, password, callback) => {
     });
   });
 };
+
 
 AccountModel = mongoose.model('Account', AccountSchema);
 

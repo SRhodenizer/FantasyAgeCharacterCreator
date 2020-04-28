@@ -2,7 +2,7 @@ const models = require('../models');
 
 // helper function to roll 1 d6
 function rollDie() {
-  return (Math.floor(Math.random() * 6));
+  return (Math.floor(Math.random() * 6)+1);
 }
 
 const {
@@ -671,6 +671,7 @@ const removeChar = (request, response) => {
   return response;
 };
 
+//sends a level
 const levelUp = (request, response) => {
   Char.CharModel.levelUp(request.session.account._id, request.body.query);
   return response;
